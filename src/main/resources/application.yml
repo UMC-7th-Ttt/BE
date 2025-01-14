@@ -17,3 +17,12 @@ spring:
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+
+place:
+  api:
+    bookstore:
+      base-url: "http://api.kcisa.kr/openapi/API_CIA_089/request"
+      key: ${PLACE_BOOKSTORE}
+    cafe:
+      base-url: "http://api.kcisa.kr/openapi/API_CIA_090/request"
+      key: ${PLACE_CAFE}
