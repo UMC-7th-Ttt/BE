@@ -16,9 +16,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +44,13 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
 
     @Value("${place.api.cafe.key}")
     private String cafeKey;
+
+    @Value("${naver.client-id}")
+    private String clientId;
+
+    @Value("${naver.client-secret}")
+    private String clientSecret;
+
 
     private final PlaceRepository placeRepository;
 
@@ -64,7 +77,6 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
                 break;
             }
 
-            // 응답 파싱 및 DB 저장
             saveApiResponseToDb(response, placeCategory);
             pageNo++;
         }
@@ -192,7 +204,6 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
     private Map<String, String> parseDescription(String description) {
         Map<String, String> businessHours = new HashMap<>();
 
-        // 기본값을 빈 문자열로 설정
         businessHours.put("weekdaysBusiness", null);
         businessHours.put("satBusiness", null);
         businessHours.put("sunBusiness", null);
@@ -299,6 +310,128 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
         }
 
         return features;
+    }
+
+
+    @Override
+    public void updateImagesForAllPlaces() {
+        List<Place> places = placeRepository.findAll();
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        int batchSize = 10;  // 한 번에 처리할 개수(초당 api 10개 호출 가능)
+        for (int i = 0; i < places.size(); i += batchSize) {
+            int end = Math.min(i + batchSize, places.size());
+            List<Place> batch = places.subList(i, end);
+
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                for (Place place : batch) {
+                    String imgUrl = searchAndGetImageUrl(place.getTitle(), place.getCategory());
+                    if (imgUrl != null) {
+                        place.updateImage(imgUrl);
+                        // placeRepository.save(place);
+                    }
+                }
+            });
+            futures.add(future);
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+    }
+
+
+    private String searchAndGetImageUrl(String placeName, PlaceCategory placeCategory) {
+        String searchKeyword = placeName;
+
+        switch (placeCategory) {
+            case BOOKSTORE:
+                searchKeyword += placeName + "독립서점";
+                break;
+            case CAFE:
+                searchKeyword += placeName + " 북카페";
+        }
+
+        String encodedSearchKeyword = URLEncoder.encode(searchKeyword, StandardCharsets.UTF_8);
+        String apiURL = "https://openapi.naver.com/v1/search/image?query=" + encodedSearchKeyword;
+
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", clientId);
+        requestHeaders.put("X-Naver-Client-Secret", clientSecret);
+
+        String responseBody = get(apiURL, requestHeaders);
+
+        return extractFirstImageFromResponse(responseBody);
+    }
+
+    private String get(String apiUrl, Map<String, String> requestHeaders) {
+        HttpURLConnection con = connect(apiUrl);
+        try {
+            con.setRequestMethod("GET");
+            for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
+                con.setRequestProperty(header.getKey(), header.getValue());
+            }
+
+            int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {  // 정상 호출
+                String responseBody = readBody(con.getInputStream());
+                System.out.println("응답 본문: " + responseBody);
+                return responseBody;
+            } else if (responseCode == 429) {  // 속도 제한 초과
+                System.out.println("속도 제한 초과: 잠시 대기합니다.");
+                Thread.sleep(500);
+                return get(apiUrl, requestHeaders);
+            } else {
+                return readBody(con.getErrorStream());
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException("API 요청과 응답 실패", e);
+        } finally {
+            con.disconnect();
+        }
+    }
+
+    private HttpURLConnection connect(String apiUrl) {
+        try {
+            URL url = new URL(apiUrl);
+            return (HttpURLConnection) url.openConnection();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);
+        } catch (IOException e) {
+            throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);
+        }
+    }
+
+    private String readBody(InputStream body) {
+        InputStreamReader streamReader = new InputStreamReader(body);
+        try (BufferedReader lineReader = new BufferedReader(streamReader)) {
+            StringBuilder responseBody = new StringBuilder();
+            String line;
+            while ((line = lineReader.readLine()) != null) {
+                responseBody.append(line);
+            }
+            return responseBody.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("API 응답을 읽는 데 실패했습니다.", e);
+        }
+    }
+
+    private String extractFirstImageFromResponse(String responseBody) {
+        try {
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            JSONArray items = jsonResponse.getJSONArray("items");
+
+            if (!items.isEmpty()) {
+                JSONObject firstItem = items.getJSONObject(0);
+                return firstItem.optString("link");
+            }
+        } catch (Exception e) {
+            System.out.println("응답 파싱 오류: " + e.getMessage());
+        }
+        return null;
     }
 
 }

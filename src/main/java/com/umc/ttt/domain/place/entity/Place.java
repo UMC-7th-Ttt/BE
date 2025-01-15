@@ -70,7 +70,7 @@ public class Place {
 
     private String curation;    // 큐레이션
 
-    public void updateImgUrl(String image) {
+    public void updateImage(String image) {
         this.image = image;
     }
 }
