@@ -19,9 +19,7 @@ public class Place {
     @Column(nullable = false)
     private String title;   // 상호명
 
-    @Column(nullable = false)
-    private String issuedDate;   // 등록일
-
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PlaceCategory category;    // 카테고리(BOOKSTORE, CAFE)
 
@@ -42,21 +40,37 @@ public class Place {
 
     private String sunBusiness; // 일요일 영업시간
 
-    @Column(nullable = false)
     private String phone;   // 전화번호
 
     @Column(nullable = false)
-    private boolean hasParking;    // 주차 가능 여부
+    private boolean hasParking;    // 주차 가능 여부(서점, 카페)
 
+    // 독립 서점 데이터
     @Column(nullable = false)
     private boolean hasCafe;  // 카페 여부
 
     @Column(nullable = false)
+    private boolean hasIndiePub;  // 독서출판물 여부
+
+    @Column(nullable = false)
+    private boolean hasBookClub;  // 독서 모임 여부
+
+    // 북카페 데이터
+    @Column(nullable = false)
+    private boolean hasGenderRestRoom; // 화장실 남녀구분 여부
+
+    @Column(nullable = false)
     private boolean hasSpaceRental; // 공간 대여 여부
 
+    // 추가 정보
+    @Column(columnDefinition = "TEXT")
     private String image;   // 장소 이미지
 
     private double rating;  // 장소 평균 평점(계산)
 
     private String curation;    // 큐레이션
+
+    public void updateImage(String image) {
+        this.image = image;
+    }
 }

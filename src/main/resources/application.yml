@@ -23,3 +23,16 @@ aladin:
     base-url: "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
     query-params: "?ttbkey=%s&QueryType=BestSeller&MaxResults=%d&start=%d&SearchTarget=Book&output=js&Version=20131101"
 
+
+place:
+  api:
+    bookstore:
+      base-url: "http://api.kcisa.kr/openapi/API_CIA_089/request"
+      key: ${PLACE_BOOKSTORE}
+    cafe:
+      base-url: "http://api.kcisa.kr/openapi/API_CIA_090/request"
+      key: ${PLACE_CAFE}
+
+naver:
+  client-id: ${NAVER_ID}
+  client-secret: ${NAVER_SECRET}
