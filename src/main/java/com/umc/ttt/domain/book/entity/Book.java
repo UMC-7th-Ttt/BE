@@ -36,7 +36,7 @@ public class Book {
     @Column(nullable = false)
     private int itemPage;    // 분량
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description; // 책 소개(상품 설명)
 
     @Column(nullable = false)
@@ -45,12 +45,14 @@ public class Book {
     @Column(nullable = false)
     private double rating;  // 평점
 
-    // 프리미엄 데이터
-    private String toc; // 목차
-
+    @Column(nullable = false)
     private String categoryName;    // 카테고리
 
+    @Column(nullable = false)
     private String link;    // 상품 링크
+
+    // 프리미엄 데이터
+    private String toc; // 목차
 
     private String publisherDescription;    // 출판사 제공 책소개
 }

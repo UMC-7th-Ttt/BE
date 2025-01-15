@@ -18,6 +18,12 @@ spring:
           auto: update
         default_batch_fetch_size: 1000
 
+aladin:
+  api:
+    base-url: "http://www.aladin.co.kr/ttb/api/ItemList.aspx"
+    query-params: "?ttbkey=%s&QueryType=BestSeller&MaxResults=%d&start=%d&SearchTarget=Book&output=js&Version=20131101"
+
+
 place:
   api:
     bookstore:
