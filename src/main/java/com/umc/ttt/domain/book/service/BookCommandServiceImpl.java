@@ -27,10 +27,12 @@ public class BookCommandServiceImpl implements BookCommandService {
     @Value("${aladin.api.query-params}")
     private String queryParams;
 
+    @Value("${aladin.api.ttbkey}")
+    private String ttbkey;
+
     @Override
     @Transactional
     public List<BookResponseDTO.Item> fetchBooks() {
-        String ttbkey = System.getenv("ALADIN_TTBKEY");
         if (ttbkey == null) {
             throw new RuntimeException("환경변수 ALADIN_TTBKEY가 설정되어 있지 않습니다.");
         }
