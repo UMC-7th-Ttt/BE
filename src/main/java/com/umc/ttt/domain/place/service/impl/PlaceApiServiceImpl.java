@@ -1,15 +1,16 @@
-package com.umc.ttt.domain.place.service;
+package com.umc.ttt.domain.place.service.impl;
 
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.entity.enums.PlaceCategory;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
-import com.umc.ttt.domain.place.service.impl.PlaceCommandService;
+import com.umc.ttt.domain.place.service.PlaceApiService;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.PlaceHandler;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,8 +31,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class PlaceCommandServiceImpl implements PlaceCommandService {
+public class PlaceApiServiceImpl implements PlaceApiService {
 
     @Value("${place.api.bookstore.base-url}")
     private String bookstoreBaseUrl;
@@ -55,6 +55,7 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
     private final PlaceRepository placeRepository;
 
     @Override
+    @Transactional
     public void fetchAndSaveOpenApiData() throws Exception {
         fetchDataForServiceKey(bookstoreBaseUrl, bookstoreKey, PlaceCategory.BOOKSTORE);
         fetchDataForServiceKey(cafeBaseUrl, cafeKey, PlaceCategory.CAFE);
@@ -314,6 +315,8 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
 
 
     @Override
+    @Async
+    @Transactional
     public void updateImagesForAllPlaces() {
         List<Place> places = placeRepository.findAll();
         List<CompletableFuture<Void>> futures = new ArrayList<>();

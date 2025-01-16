@@ -20,6 +20,10 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_SERVICE_KEY(HttpStatus.UNAUTHORIZED, "PLACE401", "서비스 키가 유효하지 않습니다."),
     SERVICE_URL_UNREACHABLE(HttpStatus.UNAUTHORIZED, "PLACE401", "서비스 주소 호출에 실패했습니다."),
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "PLACE503", "서비스 점검중입니다.(내부 서비스 호출 장애)"),
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLACE404", "장소가 존재하지 않습니다."),
+
+    // 회원
+    PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER403", "권한이 없습니다.")
 
     ;
 

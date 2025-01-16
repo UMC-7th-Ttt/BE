@@ -68,9 +68,19 @@ public class Place {
 
     private double rating;  // 장소 평균 평점(계산)
 
-    private String curation;    // 큐레이션
+    // 큐레이션
+    private String curationTitle;    // 제목
+
+    @Column(columnDefinition = "TEXT")
+    private String curationContent;    // 내용
 
     public void updateImage(String image) {
         this.image = image;
     }
+
+    public void updateCuration(String curationTitle, String curationContent) {
+        this.curationTitle = curationTitle;
+        this.curationContent = curationContent;
+    }
+
 }
