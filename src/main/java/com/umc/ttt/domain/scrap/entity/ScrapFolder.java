@@ -1,4 +1,4 @@
-package com.umc.ttt.domain.place.entity;
+package com.umc.ttt.domain.scrap.entity;
 
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.global.common.BaseEntity;
@@ -10,18 +10,22 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-public class PlaceScrap extends BaseEntity {
+public class ScrapFolder extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "place_scrap_id", nullable = false)
+    @Column(name = "scrap_folder_id", nullable = false)
     private Long id;
+
+    @Column(nullable = false)
+    private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_id")
-    private Place place;
+    // 기본 폴더 여부
+    public boolean isDefaultFolder() {
+        return this.name.equals("도서") || this.name.equals("공간");
+    }
 }

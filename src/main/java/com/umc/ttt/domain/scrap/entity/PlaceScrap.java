@@ -1,6 +1,6 @@
-package com.umc.ttt.domain.book.entity;
+package com.umc.ttt.domain.scrap.entity;
 
-import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,18 +10,18 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-public class BookScrap extends BaseEntity {
+public class PlaceScrap extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_scrap_id", nullable = false)
+    @Column(name = "place_scrap_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "place_id")
+    private Place place;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "scrap_folder_id")
+    private ScrapFolder scrapFolder;
 }
