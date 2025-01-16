@@ -6,6 +6,7 @@ import com.umc.ttt.domain.place.dto.PlaceRequestDTO;
 import com.umc.ttt.domain.place.dto.PlaceResponseDTO;
 import com.umc.ttt.domain.place.service.PlaceApiService;
 import com.umc.ttt.domain.place.service.PlaceCommandService;
+import com.umc.ttt.domain.place.service.PlaceQueryService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -19,6 +20,7 @@ public class PlaceRestController {
 
     private final PlaceApiService placeApiService;
     private final PlaceCommandService placeCommandService;
+    private final PlaceQueryService placeQueryService;
     private final MemberRepository memberRepository;
 
     @PostMapping
@@ -44,4 +46,11 @@ public class PlaceRestController {
         return ApiResponse.onSuccess(placeCommandService.updateCuration(placeId, curationDTO, member));
     }
 
+    @GetMapping("/{placeId}")
+    @Operation(summary = "장소 상세 조회")
+    public ApiResponse<PlaceResponseDTO.PlaceDTO> getPlace(@PathVariable(name = "placeId") Long placeId) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        return ApiResponse.onSuccess(placeQueryService.getPlace(placeId, member));
+    }
 }
