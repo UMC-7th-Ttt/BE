@@ -54,6 +54,9 @@ public class PlaceApiServiceImpl implements PlaceApiService {
 
     private final PlaceRepository placeRepository;
 
+    /**
+     * 장소 open API 호출
+     */
     @Override
     @Transactional
     public void fetchAndSaveOpenApiData() throws Exception {
@@ -182,7 +185,6 @@ public class PlaceApiServiceImpl implements PlaceApiService {
                                 .hasCafe(features.get("hasCafe"))
                                 .hasIndiePub(features.get("hasIndiePub"))
                                 .hasBookClub(features.get("hasBookClub"))
-                                .hasGenderRestRoom(features.get("hasGenderRestRoom"))
                                 .hasSpaceRental(features.get("hasSpaceRental"))
                                 .build();
 
@@ -257,7 +259,6 @@ public class PlaceApiServiceImpl implements PlaceApiService {
         features.put("hasCafe", false);
         features.put("hasBookClub", false);
         features.put("hasIndiePub", false);
-        features.put("hasGenderRestRoom", false);
         features.put("hasSpaceRental", false);
 
         if (subDescription == null || subDescription.isEmpty()) {
@@ -294,13 +295,6 @@ public class PlaceApiServiceImpl implements PlaceApiService {
                 break;
 
             case CAFE:
-                // 화장실 남녀구분 여부 추출
-                Pattern restroomPattern = Pattern.compile("(화장실\\s*남녀구분\\s*:?\\s*구분)");
-                Matcher restroomMatcher = restroomPattern.matcher(subDescription);
-                if (restroomMatcher.find()) {
-                    features.put("hasGenderRestRoom", true);
-                }
-
                 // 공간 대여 여부 추출
                 Pattern spaceRentalPattern = Pattern.compile("(공간\\s*대여\\s*:?\\s*가능|공간 대여 가능)");
                 Matcher spaceRentalMatcher = spaceRentalPattern.matcher(subDescription);
@@ -314,6 +308,9 @@ public class PlaceApiServiceImpl implements PlaceApiService {
     }
 
 
+    /**
+     * 이미지 - 네이버 검색 api 호출
+     */
     @Override
     @Async
     @Transactional

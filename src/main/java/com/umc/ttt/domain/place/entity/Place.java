@@ -57,9 +57,6 @@ public class Place {
 
     // 북카페 데이터
     @Column(nullable = false)
-    private boolean hasGenderRestRoom; // 화장실 남녀구분 여부
-
-    @Column(nullable = false)
     private boolean hasSpaceRental; // 공간 대여 여부
 
     // 추가 정보
