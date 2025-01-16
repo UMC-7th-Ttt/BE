@@ -1,7 +1,7 @@
 package com.umc.ttt.domain.book.service;
 
 import com.umc.ttt.domain.book.converter.BookConverter;
-import com.umc.ttt.domain.book.dto.BookResponseDTO;
+import com.umc.ttt.domain.book.dto.BookFetchDTO;
 import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.book.entity.BookCategory;
 import com.umc.ttt.domain.book.repository.BookCategoryRepository;
@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,13 +38,14 @@ public class BookCommandServiceImpl implements BookCommandService {
     @Value("${aladin.api.ttbkey}")
     private String ttbkey;
 
+    @Override
     @Transactional
     public void fetchBooks() {
         if (ttbkey == null) {
             throw new RuntimeException("환경변수 ALADIN_TTBKEY가 설정되어 있지 않습니다.");
         }
 
-        List<BookResponseDTO.Item> allItems = new ArrayList<>();
+        List<BookFetchDTO.Item> allItems = new ArrayList<>();
         int maxResults = 50;
         int startPage = 1;
 
@@ -62,22 +62,25 @@ public class BookCommandServiceImpl implements BookCommandService {
             BookCategory bookCategory = bookCategoryRepository.findById((long) bookCategoryId)
                     .orElseThrow(() -> new RuntimeException("BookCategoryId " + bookCategoryId + "를 찾을 수 없습니다."));
 
-
             String apiUrl = String.format(baseUrl + queryParams + "&CategoryId=%d", ttbkey, maxResults, startPage, categoryId);
 
-            BookResponseDTO response = restTemplate.getForObject(apiUrl, BookResponseDTO.class);
+            BookFetchDTO response = restTemplate.getForObject(apiUrl, BookFetchDTO.class);
 
             if (response == null || response.getItem() == null || response.getItem().isEmpty()) {
                 System.out.println("CategoryId " + categoryId + "에 대한 데이터가 없습니다.");
                 continue;
             }
 
-            for (BookResponseDTO.Item item : response.getItem()) {
+            for (BookFetchDTO.Item item : response.getItem()) {
+                if (bookRepository.findByIsbn(item.getIsbn()).isPresent()) {
+                    continue;
+                }
+
                 String lookupUrl = String.format(itemLookupUrl + itemQueryParams, ttbkey, item.getIsbn());
-                BookResponseDTO lookupResponse = restTemplate.getForObject(lookupUrl, BookResponseDTO.class);
+                BookFetchDTO lookupResponse = restTemplate.getForObject(lookupUrl, BookFetchDTO.class);
 
                 if (lookupResponse != null && lookupResponse.getItem() != null && !lookupResponse.getItem().isEmpty()) {
-                    BookResponseDTO.Item lookupItem = lookupResponse.getItem().get(0);
+                    BookFetchDTO.Item lookupItem = lookupResponse.getItem().get(0);
 
                     item.setItemPage(lookupItem.getItemPage());
                     item.setHasEbook(lookupItem.isHasEbook());
