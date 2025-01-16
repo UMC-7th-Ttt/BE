@@ -23,7 +23,13 @@ public enum ErrorStatus implements BaseErrorCode {
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "PLACE404", "장소가 존재하지 않습니다."),
 
     // 회원
-    PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER403", "권한이 없습니다.")
+    PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER403", "권한이 없습니다."),
+
+    // 스크랩
+    FOLDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),
+    INVALID_FOLDER(HttpStatus.BAD_REQUEST, "FOLDER400", "유효하지 않은 폴더 위치입니다."),
+    SCRAP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "SCRAP400", "이미 스크랩한 장소입니다."),
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP404", "스크랩 내역이 존재하지 않습니다.")
 
     ;
 

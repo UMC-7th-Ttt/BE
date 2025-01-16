@@ -6,10 +6,10 @@ import com.umc.ttt.domain.place.entity.Place;
 
 public class PlaceConverter {
 
-    public static PlaceResponseDTO.CurationDTO curationPreviewDTO(Place place, Long memberId) {
+    public static PlaceResponseDTO.CurationDTO toCurationPreviewDTO(Place place, Member member) {
         return PlaceResponseDTO.CurationDTO.builder()
-                .memberId(memberId)
-                .placeId(String.valueOf(place.getId()))
+                .memberId(member.getId())
+                .placeId(place.getId())
                 .curationTitle(place.getCurationTitle())
                 .curationContent(place.getCurationContent())
                 .build();

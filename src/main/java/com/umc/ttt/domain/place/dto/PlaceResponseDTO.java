@@ -10,7 +10,7 @@ public class PlaceResponseDTO {
     @Getter
     public static class CurationDTO {
         private Long memberId;
-        private String placeId;
+        private Long placeId;
         private String curationTitle;
         private String curationContent;
     }

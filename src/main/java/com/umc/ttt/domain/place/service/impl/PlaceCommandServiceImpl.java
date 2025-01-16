@@ -35,7 +35,7 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceHandler(ErrorStatus.PLACE_NOT_FOUND));
         place.updateCuration(curationDTO.getCurationTitle(), curationDTO.getCurationContent());
-        return PlaceConverter.curationPreviewDTO(place, member.getId());
+        return PlaceConverter.toCurationPreviewDTO(place, member);
     }
 
 }
