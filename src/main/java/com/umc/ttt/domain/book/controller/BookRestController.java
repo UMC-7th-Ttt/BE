@@ -17,9 +17,9 @@ public class BookRestController {
     private final BookCommandService bookCommandService;
 
     @PostMapping("/fetch")
-    @Operation(summary = "알라딘 Open API 데이터 저장")
-    public ApiResponse<List<BookResponseDTO.Item>> fetchBooks() {
-        List<BookResponseDTO.Item> books = bookCommandService.fetchBooks();
-        return ApiResponse.onSuccess(books);
+    @Operation(summary = "알라딘 Open API 데이터 저장", description = "서버 테스트용 api입니다. 연동x")
+    public ApiResponse<String> fetchBooks() {
+        bookCommandService.fetchBooks();
+        return ApiResponse.onSuccess("알라딘 Open API 데이터가 저장되었습니다.");
     }
 }
