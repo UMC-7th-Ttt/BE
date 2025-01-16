@@ -45,6 +45,9 @@ dependencies {
 
 	// Json
 	implementation 'org.json:json:20231013'
+
+	//jwt
+	implementation 'com.auth0:java-jwt:4.2.1'
 }
 
 tasks.named('test') {
