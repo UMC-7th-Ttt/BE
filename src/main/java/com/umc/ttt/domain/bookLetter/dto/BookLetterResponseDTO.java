@@ -40,4 +40,35 @@ public class BookLetterResponseDTO {
         String title;
         String editor;
     }
+
+    // 북레터 상세 페이지
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookLetterDTO {
+        String title;
+        String subtitle;
+        String editor;
+        Boolean isWriter;
+        String content;
+        String coverImg;
+        List<BookDTO> bookList;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookDTO{
+        Long bookId;
+        String title;
+        String author;
+        String cover;
+        String publisher;
+        Integer itemPage;
+        String categoryName;
+        Boolean hasEbook;
+        String description;
+    }
 }

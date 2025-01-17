@@ -49,4 +49,34 @@ public class BookLetterConverter {
                 .bookLetterList(bookLetterPreviewDTOList)
                 .build();
     }
+
+    // 북레터 상세 보기
+    public static BookLetterResponseDTO.BookDTO bookDTO(Book book) {
+        return BookLetterResponseDTO.BookDTO.builder()
+                .bookId(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .cover(book.getCover())
+                .publisher(book.getPublisher())
+                .itemPage(book.getItemPage())
+                .categoryName(book.getBookCategory().getCategoryName())
+                .hasEbook(book.isHasEbook())
+                .description(book.getDescription())
+                .build();
+    }
+
+    public static BookLetterResponseDTO.BookLetterDTO bookLetterDTO(BookLetter bookLetter) {
+        List<BookLetterResponseDTO.BookDTO> bookDTOList = bookLetter.getBooks().stream()
+                .map(BookLetterConverter::bookDTO).collect(Collectors.toList());
+
+        return BookLetterResponseDTO.BookLetterDTO.builder()
+                .title(bookLetter.getTitle())
+                .subtitle(bookLetter.getSubtitle())
+                .editor(bookLetter.getEditor())
+                .isWriter(true) // 추후 관리자 여부 확인 로직되면 수정
+                .content(bookLetter.getContent())
+                .coverImg(bookLetter.getCoverImg())
+                .bookList(bookDTOList)
+                .build();
+    }
 }

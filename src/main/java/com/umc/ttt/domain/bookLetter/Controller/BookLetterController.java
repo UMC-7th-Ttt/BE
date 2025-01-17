@@ -52,4 +52,12 @@ public class BookLetterController {
         Page<BookLetter> bookLetterList = bookLetterCommandService.getBookLetterPreViewList(page-1);
         return ApiResponse.onSuccess(BookLetterConverter.bookLetterListDTO(bookLetterList));
     }
+
+    // 북레터 상세 페이지
+    @GetMapping("/{bookLetterId}")
+    @Operation(summary = "북레터 상세 조회", description = "특정 북레터의 상세 정보를 조회하는 API입니다.")
+    public ApiResponse<BookLetterResponseDTO.BookLetterDTO> getBookLetter(@PathVariable(name = "bookLetterId")Long bookLetterId){
+        BookLetter bookLetter = bookLetterCommandService.getBookLetter(bookLetterId);
+        return ApiResponse.onSuccess(BookLetterConverter.bookLetterDTO(bookLetter));
+    }
 }

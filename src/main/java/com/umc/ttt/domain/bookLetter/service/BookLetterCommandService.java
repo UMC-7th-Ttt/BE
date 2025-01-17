@@ -9,4 +9,5 @@ public interface BookLetterCommandService {
     BookLetter updateBookLetter(Long bookLetterId ,BookLetterRequestDTO.CRDto request);
     void deleteBookLetter(Long bookLetterId);
     Page<BookLetter> getBookLetterPreViewList(Integer page);
+    BookLetter getBookLetter(Long bookLetterId);
 }

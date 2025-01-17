@@ -83,4 +83,12 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
         Page<BookLetter> bookLetterPreviewPage = bookLetterRepository.findAll(PageRequest.of(page,10));
         return bookLetterPreviewPage;
     }
+
+    // 특정 북레터 상세 정보 보기
+    @Override
+    @Transactional
+    public BookLetter getBookLetter(Long bookLetterId) {
+       BookLetter bookLetter = bookLetterRepository.findById(bookLetterId).orElseThrow(()->new BookLetterHandler(ErrorStatus.BOOKLETTER_NOT_FOUND));
+        return bookLetter;
+    }
 }
