@@ -31,14 +31,14 @@ public class PlaceRestController {
     }
 
     @PatchMapping("/images")
-    @Operation(summary = "장소 이미지 데이터 저장 - Naver API", description = "서버 테스트용 api입니다. 연동x")
+    @Operation(summary = "공간 이미지 데이터 저장 - Naver API", description = "서버 테스트용 api입니다. 연동x")
     public ApiResponse<String> updateImagesForAllPlaces() {
         placeApiService.updateImagesForAllPlaces();
         return ApiResponse.onSuccess("모든 장소의 이미지가 업데이트되었습니다.");
     }
 
     @PatchMapping("/{placeId}/curations")
-    @Operation(summary = "장소 큐레이션 작성, 수정", description = "관리자만 작성 및 수정 가능합니다. 삭제의 경우 빈 문자열을 전달해주세요.")
+    @Operation(summary = "공간 큐레이션 작성, 수정", description = "관리자만 작성 및 수정 가능합니다. 삭제의 경우 빈 문자열을 전달해주세요.")
     public ApiResponse<PlaceResponseDTO.CurationDTO> updateCuration(@PathVariable(name = "placeId") Long placeId,
                                                                     @Valid @RequestBody PlaceRequestDTO.CurationDTO curationDTO) {
         // TODO: 로그인한 회원 정보로 변경
@@ -47,7 +47,7 @@ public class PlaceRestController {
     }
 
     @GetMapping("/{placeId}")
-    @Operation(summary = "장소 상세 조회")
+    @Operation(summary = "공간 상세 조회")
     public ApiResponse<PlaceResponseDTO.PlaceDTO> getPlace(@PathVariable(name = "placeId") Long placeId) {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
