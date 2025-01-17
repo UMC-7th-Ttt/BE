@@ -2,9 +2,11 @@ package com.umc.ttt.domain.bookLetter.service;
 
 import com.umc.ttt.domain.bookLetter.dto.BookLetterRequestDTO;
 import com.umc.ttt.domain.bookLetter.entity.BookLetter;
+import org.springframework.data.domain.Page;
 
 public interface BookLetterCommandService {
-    public BookLetter addBookLetter(BookLetterRequestDTO.CRDto request);
-    public BookLetter updateBookLetter(Long bookLetterId ,BookLetterRequestDTO.CRDto request);
-    public void deleteBookLetter(Long bookLetterId);
+    BookLetter addBookLetter(BookLetterRequestDTO.CRDto request);
+    BookLetter updateBookLetter(Long bookLetterId ,BookLetterRequestDTO.CRDto request);
+    void deleteBookLetter(Long bookLetterId);
+    Page<BookLetter> getBookLetterPreViewList(Integer page);
 }

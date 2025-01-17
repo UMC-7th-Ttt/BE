@@ -38,7 +38,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 북레터
     BOOKLETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKLETTER401", "북레터를 찾을 수 없습니다."),
-    BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다.");
+    BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다."),
+
+    // 페이지 관련
+    INVALID_PAGE(HttpStatus.BAD_REQUEST, "PAGE401", "존재하지 않는 페이지입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
