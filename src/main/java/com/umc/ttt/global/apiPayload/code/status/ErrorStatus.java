@@ -16,6 +16,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    // 페이지
+    PAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "PAGE404", "해당 커서 값의 페이지가 존재하지 않습니다."),
+
     // 나들이 북클럽
     INVALID_SERVICE_KEY(HttpStatus.UNAUTHORIZED, "PLACE401", "서비스 키가 유효하지 않습니다."),
     SERVICE_URL_UNREACHABLE(HttpStatus.UNAUTHORIZED, "PLACE401", "서비스 주소 호출에 실패했습니다."),

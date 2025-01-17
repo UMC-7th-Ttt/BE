@@ -26,7 +26,9 @@ public class BookRestController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "책 검색", description = "책 검색 API이며, 검색 결과는 커서를 기반으로 페이징 처리됩니다.")
+    @Operation(summary = "책 검색", description = "책 검색 API이며, 검색 결과는 커서를 기반으로 페이징 처리됩니다.\n\n" +
+            "첫 페이지 조회 시 각 cursor 값으로 0을 전달해주세요.\n\n" +
+            "첫 페이지가 아닌 경우 이전 응답의 hasNext가 true일 때, nextCursor 값을 cursor로 전달해주세요.")
     @Parameters({
             @Parameter(name = "keyword", description = "검색 키워드"),
             @Parameter(name = "cursor", description = "페이지 커서, defualt 값은 0입니다."),

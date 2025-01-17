@@ -12,8 +12,9 @@ public class BookResponseDTO {
     @AllArgsConstructor
     public static class SearchBookResultDTO {
         private List<BookInfoDTO> books;
-        private Long cursor;
+        private Long nextCursor;
         private int limit;
+        private boolean hasNext;
     }
 
     @Builder

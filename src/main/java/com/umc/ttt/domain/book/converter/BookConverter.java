@@ -26,7 +26,7 @@ public class BookConverter {
                 .build();
     }
 
-    public static BookResponseDTO.SearchBookResultDTO toSearchBooksResultDTO(List<Book> books, long cursor, int limit) {
+    public static BookResponseDTO.SearchBookResultDTO toSearchBooksResultDTO(List<Book> books, long nextCursor, int limit, boolean hasNext) {
         List<BookResponseDTO.BookInfoDTO> bookInfoList = books.stream()
                 .map(book -> BookResponseDTO.BookInfoDTO.builder()
                         .id(book.getId())
@@ -38,10 +38,12 @@ public class BookConverter {
                         .build())
                 .collect(Collectors.toList());
 
+
         return BookResponseDTO.SearchBookResultDTO.builder()
                 .books(bookInfoList)
-                .cursor(cursor + books.size())
+                .nextCursor(nextCursor)
                 .limit(limit)
+                .hasNext(hasNext)
                 .build();
     }
 }
