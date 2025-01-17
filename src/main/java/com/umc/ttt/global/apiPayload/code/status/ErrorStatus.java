@@ -31,7 +31,7 @@ public enum ErrorStatus implements BaseErrorCode {
     FOLDER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "FOLDER400", "이미 존재하는 폴더입니다."),
     CANNOT_DELETE_DEFAULT_FOLDER(HttpStatus.FORBIDDEN, "FOLDER403", "기본 폴더는 삭제할 수 없습니다."),
     SCRAP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "SCRAP400", "이미 스크랩한 장소입니다."),
-    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP404", "스크랩 내역이 존재하지 않습니다.")
+    SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP404", "스크랩 내역이 존재하지 않습니다."),
 
     // 책 관련 에러
     BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK401", "책을 찾을 수 없습니다."),
