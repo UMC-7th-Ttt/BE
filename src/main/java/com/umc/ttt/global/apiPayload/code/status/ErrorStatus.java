@@ -21,7 +21,12 @@ public enum ErrorStatus implements BaseErrorCode {
     SERVICE_URL_UNREACHABLE(HttpStatus.UNAUTHORIZED, "PLACE401", "서비스 주소 호출에 실패했습니다."),
     SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, "PLACE503", "서비스 점검중입니다.(내부 서비스 호출 장애)"),
 
-    ;
+    // 책 관련 에러
+    BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK401", "책을 찾을 수 없습니다."),
+
+    // 북레터
+    BOOKLETTER_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOKLETTER401", "북레터를 찾을 수 없습니다."),
+    BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
