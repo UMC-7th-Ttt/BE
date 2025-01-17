@@ -30,7 +30,7 @@ public class BookLetterController {
     @Operation(summary = "북레터 수정",description = "북레터를 수정하는 API입니다.")
     public ApiResponse<BookLetterResponseDTO.CRDResultDTO> modifyBookLetter(
             @PathVariable(name = "bookLetterId") Long bookLetterId,
-            @RequestBody BookLetterRequestDTO.CRDto request){
+            @RequestBody @Valid BookLetterRequestDTO.CRDto request){
         BookLetter bookLetter = bookLetterCommandService.updateBookLetter(bookLetterId, request);
         return ApiResponse.onSuccess(BookLetterConverter.toCRResultDTO(bookLetter));
     }

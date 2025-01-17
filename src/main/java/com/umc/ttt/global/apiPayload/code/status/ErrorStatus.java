@@ -34,10 +34,10 @@ public enum ErrorStatus implements BaseErrorCode {
     SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, "SCRAP404", "스크랩 내역이 존재하지 않습니다."),
 
     // 책 관련 에러
-    BOOK_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOK401", "책을 찾을 수 없습니다."),
+    BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK401", "책을 찾을 수 없습니다."),
 
     // 북레터
-    BOOKLETTER_NOT_FOUND(HttpStatus.BAD_REQUEST, "BOOKLETTER401", "북레터를 찾을 수 없습니다."),
+    BOOKLETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKLETTER401", "북레터를 찾을 수 없습니다."),
     BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다.");
 
     private final HttpStatus httpStatus;
