@@ -26,7 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER403", "권한이 없습니다."),
 
     // 스크랩
-    FOLDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),
+    FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),
     INVALID_FOLDER(HttpStatus.BAD_REQUEST, "FOLDER400", "유효하지 않은 폴더 위치입니다."),
     FOLDER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "FOLDER400", "이미 존재하는 폴더입니다."),
     CANNOT_DELETE_DEFAULT_FOLDER(HttpStatus.FORBIDDEN, "FOLDER403", "기본 폴더는 삭제할 수 없습니다."),
