@@ -5,6 +5,9 @@ import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +26,12 @@ public class ScrapFolder extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "scrapFolder", cascade = CascadeType.ALL)
+    private List<BookScrap> bookScraps = new ArrayList<>();
+
+    @OneToMany(mappedBy = "scrapFolder", cascade = CascadeType.ALL)
+    private List<PlaceScrap> placeScraps = new ArrayList<>();
 
     // 기본 폴더 여부
     public boolean isDefaultFolder() {

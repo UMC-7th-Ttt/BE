@@ -11,4 +11,8 @@ public interface ScrapFolderRepository extends JpaRepository<ScrapFolder, Long> 
     List<ScrapFolder> findAllByMember(Member member);
 
     Optional<ScrapFolder> findByMemberAndName(Member member, String folder);
+
+    boolean existsByMemberAndName(Member member, String folder);
+
+    Optional<ScrapFolder> findByIdAndMember(Long folderId, Member member);
 }

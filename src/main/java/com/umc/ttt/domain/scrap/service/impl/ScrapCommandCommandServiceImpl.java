@@ -5,6 +5,7 @@ import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 import com.umc.ttt.domain.scrap.entity.ScrapFolder;
+import com.umc.ttt.domain.scrap.repository.BookScrapRepository;
 import com.umc.ttt.domain.scrap.repository.PlaceScrapRepository;
 import com.umc.ttt.domain.scrap.converter.ScrapConverter;
 import com.umc.ttt.domain.scrap.entity.PlaceScrap;
@@ -19,16 +20,56 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
 
     private final PlaceRepository placeRepository;
     private final PlaceScrapRepository placeScrapRepository;
+    private final BookScrapRepository bookScrapRepository;
     private final ScrapFolderRepository scrapFolderRepository;
 
     // TODO: 회원가입 시 기본 폴더(도서, 공간) 생성하는 로직 추가 필요
 
     @Override
-    @Transactional
+    public ScrapResponseDTO.ScrapFolderDTO createScrapFolder(String folder, Member member) {
+        // 폴더가 이미 존재하는지 확인
+        if (scrapFolderRepository.existsByMemberAndName(member, folder)) {
+            throw new ScrapHandler(ErrorStatus.FOLDER_ALREADY_EXISTS);
+        }
+
+        // 폴더 생성
+        ScrapFolder scrapFolder = ScrapFolder.builder()
+                .name(folder)
+                .member(member)
+                .build();
+
+        scrapFolderRepository.save(scrapFolder);
+
+        return ScrapConverter.toScrapFolderDTO(scrapFolder);
+    }
+
+    @Override
+    public Long deleteScrapFolder(Long folderId, Member member) {
+        // 폴더가 존재하는지 확인
+        ScrapFolder scrapFolder = scrapFolderRepository.findByIdAndMember(folderId, member)
+                .orElseThrow(() -> new ScrapHandler(ErrorStatus.FOLDER_NOT_FOUND));
+
+        // 기본 폴더(도서, 공간)는 삭제할 수 없음
+        if (scrapFolder.isDefaultFolder()) {
+            throw new ScrapHandler(ErrorStatus.CANNOT_DELETE_DEFAULT_FOLDER);
+        }
+
+        // 폴더에 포함된 스크랩 내역 삭제(도서, 공간)
+        bookScrapRepository.deleteAllByScrapFolder(scrapFolder);
+        placeScrapRepository.deleteAllByScrapFolder(scrapFolder);
+
+        // 폴더 삭제
+        scrapFolderRepository.delete(scrapFolder);
+
+        return folderId;
+    }
+
+    @Override
     public ScrapResponseDTO.PlaceScrapDTO addPlaceScrap(Long placeId, String folder, Member member) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceHandler(ErrorStatus.PLACE_NOT_FOUND));
@@ -64,7 +105,6 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
     }
 
     @Override
-    @Transactional
     public ScrapResponseDTO.PlaceScrapDTO removePlaceScrap(Long placeId, Member member) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceHandler(ErrorStatus.PLACE_NOT_FOUND));
