@@ -1,6 +1,6 @@
-package com.umc.ttt.domain.place.entity;
+package com.umc.ttt.domain.scrap.entity;
 
-import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,10 +18,10 @@ public class PlaceScrap extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scrap_folder_id")
+    private ScrapFolder scrapFolder;
 }

@@ -1,5 +1,7 @@
 package com.umc.ttt.domain.book.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.umc.ttt.domain.book.entity.BookCategory;
 import lombok.*;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class BookResponseDTO {
 
     @Builder
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Item {
@@ -31,10 +34,26 @@ public class BookResponseDTO {
         private String author;
         private String cover;
         private String isbn;
-        private String categoryName;
         private String publisher;
         private String description;
         private String bestRank;
         private String link;
+        private int itemPage;
+        private boolean hasEbook;
+        private BookCategory category;
+
+        @JsonProperty("subInfo")
+        private void unpackSubInfo(SubInfo subInfo) {
+            this.hasEbook = subInfo != null && subInfo.getEbookList() != null && !subInfo.getEbookList().isEmpty();
+            this.itemPage = subInfo.getItemPage();
+        }
+
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class SubInfo {
+            private int itemPage;
+            private List<?> ebookList;
+        }
     }
 }

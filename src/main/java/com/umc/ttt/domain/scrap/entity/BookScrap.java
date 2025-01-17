@@ -1,6 +1,6 @@
-package com.umc.ttt.domain.book.entity;
+package com.umc.ttt.domain.scrap.entity;
 
-import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,10 +18,10 @@ public class BookScrap extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     private Book book;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scrap_folder_id")
+    private ScrapFolder scrapFolder;
 }
