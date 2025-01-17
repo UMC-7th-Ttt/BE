@@ -1,15 +1,16 @@
-package com.umc.ttt.domain.place.service;
+package com.umc.ttt.domain.place.service.impl;
 
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.entity.enums.PlaceCategory;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
-import com.umc.ttt.domain.place.service.impl.PlaceCommandService;
+import com.umc.ttt.domain.place.service.PlaceApiService;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.PlaceHandler;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,8 +31,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class PlaceCommandServiceImpl implements PlaceCommandService {
+public class PlaceApiServiceImpl implements PlaceApiService {
 
     @Value("${place.api.bookstore.base-url}")
     private String bookstoreBaseUrl;
@@ -54,7 +54,11 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
 
     private final PlaceRepository placeRepository;
 
+    /**
+     * 장소 open API 호출
+     */
     @Override
+    @Transactional
     public void fetchAndSaveOpenApiData() throws Exception {
         fetchDataForServiceKey(bookstoreBaseUrl, bookstoreKey, PlaceCategory.BOOKSTORE);
         fetchDataForServiceKey(cafeBaseUrl, cafeKey, PlaceCategory.CAFE);
@@ -181,7 +185,6 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
                                 .hasCafe(features.get("hasCafe"))
                                 .hasIndiePub(features.get("hasIndiePub"))
                                 .hasBookClub(features.get("hasBookClub"))
-                                .hasGenderRestRoom(features.get("hasGenderRestRoom"))
                                 .hasSpaceRental(features.get("hasSpaceRental"))
                                 .build();
 
@@ -256,7 +259,6 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
         features.put("hasCafe", false);
         features.put("hasBookClub", false);
         features.put("hasIndiePub", false);
-        features.put("hasGenderRestRoom", false);
         features.put("hasSpaceRental", false);
 
         if (subDescription == null || subDescription.isEmpty()) {
@@ -293,13 +295,6 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
                 break;
 
             case CAFE:
-                // 화장실 남녀구분 여부 추출
-                Pattern restroomPattern = Pattern.compile("(화장실\\s*남녀구분\\s*:?\\s*구분)");
-                Matcher restroomMatcher = restroomPattern.matcher(subDescription);
-                if (restroomMatcher.find()) {
-                    features.put("hasGenderRestRoom", true);
-                }
-
                 // 공간 대여 여부 추출
                 Pattern spaceRentalPattern = Pattern.compile("(공간\\s*대여\\s*:?\\s*가능|공간 대여 가능)");
                 Matcher spaceRentalMatcher = spaceRentalPattern.matcher(subDescription);
@@ -313,7 +308,12 @@ public class PlaceCommandServiceImpl implements PlaceCommandService {
     }
 
 
+    /**
+     * 이미지 - 네이버 검색 api 호출
+     */
     @Override
+    @Async
+    @Transactional
     public void updateImagesForAllPlaces() {
         List<Place> places = placeRepository.findAll();
         List<CompletableFuture<Void>> futures = new ArrayList<>();
