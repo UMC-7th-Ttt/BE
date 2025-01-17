@@ -57,20 +57,27 @@ public class Place {
 
     // 북카페 데이터
     @Column(nullable = false)
-    private boolean hasGenderRestRoom; // 화장실 남녀구분 여부
-
-    @Column(nullable = false)
     private boolean hasSpaceRental; // 공간 대여 여부
 
     // 추가 정보
     @Column(columnDefinition = "TEXT")
     private String image;   // 장소 이미지
 
-    private double rating;  // 장소 평균 평점(계산)
+    private double rating;  // 장소 전체 평균 평점(계산)
 
-    private String curation;    // 큐레이션
+    // 큐레이션
+    private String curationTitle;    // 제목
+
+    @Column(columnDefinition = "TEXT")
+    private String curationContent;    // 내용
 
     public void updateImage(String image) {
         this.image = image;
     }
+
+    public void updateCuration(String curationTitle, String curationContent) {
+        this.curationTitle = curationTitle;
+        this.curationContent = curationContent;
+    }
+
 }
