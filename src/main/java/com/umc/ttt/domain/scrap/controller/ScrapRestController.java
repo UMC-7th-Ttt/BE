@@ -21,8 +21,8 @@ public class ScrapRestController {
     private final ScrapCommandService scrapCommandService;
     private final ScrapQueryService scrapQueryService;
 
-    @GetMapping("/scraps")
-    @Operation(summary = "스크랩 폴더 목록 조회")
+    @GetMapping("/scraps/folders")
+    @Operation(summary = "스크랩 폴더 목록 조회", description = "도서, 공간은 기본 폴더입니다.")
     public ApiResponse<List<ScrapResponseDTO.ScrapFolderDTO>> getScrapFolders() {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
@@ -50,7 +50,7 @@ public class ScrapRestController {
         return ApiResponse.onSuccess(scrapCommandService.createScrapFolder(folder, member));
     }
 
-    @PostMapping("/scraps/folders/{folderId}")
+    @DeleteMapping("/scraps/folders/{folderId}")
     @Operation(summary = "스크랩 폴더 삭제", description = "폴더의 스크랩 내역까지 모두 삭제됩니다. 기본 폴더(도서, 공간)는 삭제할 수 없습니다.")
     public ApiResponse<Long> deleteScrapFolder(@PathVariable(name = "folderId") Long folderId) {
         // TODO: 로그인한 회원 정보로 변경
