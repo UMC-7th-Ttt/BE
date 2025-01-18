@@ -4,6 +4,7 @@ import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.bookLetter.dto.BookLetterRequestDTO;
 import com.umc.ttt.domain.bookLetter.dto.BookLetterResponseDTO;
 import com.umc.ttt.domain.bookLetter.entity.BookLetter;
+import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,15 +17,24 @@ public class BookLetterConverter {
                 .build();
     }
 
-    public static BookLetter toBookLetter(BookLetterRequestDTO.CRDto request, List<Book> books) {
+    public static BookLetter toBookLetter(BookLetterRequestDTO.CRDto request) {
         return BookLetter.builder()
-                .books(books)
                 .title(request.getTitle())
                 .subtitle(request.getSubtitle())
                 .editor(request.getEditor())
                 .content(request.getContent())
                 .coverImg(request.getCoverImg())
                 .build();
+    }
+
+    public static List<BookLetterBook> toBookLetterBook(List<Book> books, BookLetter bookLetter) {
+        return books.stream()
+                .map(book -> {
+                    return BookLetterBook.builder()
+                            .bookLetter(bookLetter)
+                            .book(book)
+                            .build();
+                }).collect(Collectors.toList());
     }
 
     // 북레터 리스트 조회
@@ -51,17 +61,17 @@ public class BookLetterConverter {
     }
 
     // 북레터 상세 보기
-    public static BookLetterResponseDTO.BookDTO bookDTO(Book book) {
+    public static BookLetterResponseDTO.BookDTO bookDTO(BookLetterBook book) {
         return BookLetterResponseDTO.BookDTO.builder()
-                .bookId(book.getId())
-                .title(book.getTitle())
-                .author(book.getAuthor())
-                .cover(book.getCover())
-                .publisher(book.getPublisher())
-                .itemPage(book.getItemPage())
-                .categoryName(book.getBookCategory().getCategoryName())
-                .hasEbook(book.isHasEbook())
-                .description(book.getDescription())
+                .bookId(book.getBook().getId())
+                .title(book.getBook().getTitle())
+                .author(book.getBook().getAuthor())
+                .cover(book.getBook().getCover())
+                .publisher(book.getBook().getPublisher())
+                .itemPage(book.getBook().getItemPage())
+                .categoryName(book.getBook().getBookCategory().getCategoryName())
+                .hasEbook(book.getBook().isHasEbook())
+                .description(book.getBook().getDescription())
                 .build();
     }
 

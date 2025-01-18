@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -43,8 +44,6 @@ public class BookLetter extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_letter_id", nullable = true)
-    @OnDelete(action= OnDeleteAction.SET_NULL)
-    private List<Book> books;
+    @OneToMany(mappedBy = "bookLetter", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookLetterBook> books = new ArrayList<>();
 }
