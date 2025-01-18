@@ -3,9 +3,11 @@ package com.umc.ttt.domain.bookLetter.service;
 import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.book.repository.BookRepository;
 import com.umc.ttt.domain.bookLetter.Converter.BookLetterConverter;
+import com.umc.ttt.domain.bookLetter.bookLetterRepository.BookLetterBookRepository;
 import com.umc.ttt.domain.bookLetter.bookLetterRepository.BookLetterRepository;
 import com.umc.ttt.domain.bookLetter.dto.BookLetterRequestDTO;
 import com.umc.ttt.domain.bookLetter.entity.BookLetter;
+import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.BookHandler;
 import com.umc.ttt.global.apiPayload.exception.handler.BookLetterHandler;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class BookLetterCommandServiceImpl implements BookLetterCommandService {
     private final BookLetterRepository bookLetterRepository;
     private final BookRepository bookRepository;
+    private final BookLetterBookRepository bookLetterBookRepository;
 
     // 북레터 추가
     @Override
@@ -37,8 +40,13 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
             throw new BookLetterHandler(ErrorStatus.BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED);
         }
 
-        BookLetter bookLetter = BookLetterConverter.toBookLetter(request,books);
-        return bookLetterRepository.save(bookLetter);
+        BookLetter bookLetter = BookLetterConverter.toBookLetter(request);
+        bookLetterRepository.save(bookLetter);
+
+        List<BookLetterBook> bookLetterBooks = BookLetterConverter.toBookLetterBook(books,bookLetter);
+        bookLetterBookRepository.saveAll(bookLetterBooks);
+
+        return bookLetter;
     }
 
     // 북레터 수정
@@ -57,14 +65,22 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
             throw new BookLetterHandler(ErrorStatus.BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED);
         }
 
-        bookLetter.setBooks(books);
         bookLetter.setTitle(request.getTitle());
         bookLetter.setSubtitle(request.getSubtitle());
         bookLetter.setEditor(request.getEditor());
         bookLetter.setContent(request.getContent());
         bookLetter.setCoverImg(request.getCoverImg());
+        bookLetterRepository.save(bookLetter);
+        
+        List<BookLetterBook> bookLetterBooks=bookLetter.getBooks();
+        bookLetterBooks.get(0).setBook(books.get(0));
+        bookLetterBooks.get(1).setBook(books.get(1));
+        bookLetterBooks.get(2).setBook(books.get(2));
+        bookLetterBooks.get(3).setBook(books.get(3));
+        bookLetterBooks.get(4).setBook(books.get(4));
+        bookLetterBookRepository.saveAll(bookLetterBooks);
 
-        return bookLetterRepository.save(bookLetter);
+        return bookLetter;
     }
 
     // 북레터 삭제
