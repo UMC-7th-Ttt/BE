@@ -3,7 +3,10 @@ package com.umc.ttt.domain.book.service;
 import com.umc.ttt.domain.book.converter.BookConverter;
 import com.umc.ttt.domain.book.dto.BookResponseDTO;
 import com.umc.ttt.domain.book.entity.Book;
+import com.umc.ttt.domain.book.entity.BookCategory;
 import com.umc.ttt.domain.book.repository.BookRepository;
+import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.member.entity.MemberPreferedCategory;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.BookHandler;
 import lombok.RequiredArgsConstructor;
@@ -40,8 +43,7 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     @Override
-    public BookResponseDTO.SuggestBooksResultDTO suggestBooks(String categoryName) {
-
+    public BookResponseDTO.SuggestBooksResultDTO suggestBooksByBookCategory(String categoryName) {
         // 카테고리 매핑 정의
         Map<String, List<String>> categoryMapping = Map.of(
                 "koreanLiterature", Arrays.asList("판타지", "미스터리", "로맨스", "소설", "시"),
@@ -59,6 +61,31 @@ public class BookQueryServiceImpl implements BookQueryService {
         }
 
         List<Book> books = bookRepository.findBooksByBookCategoryNames(bookCategoryNames);
+
+        // 최대 10권을 랜덤으로 선택
+        List<Book> randomBooks = books.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        collected -> {
+                            Collections.shuffle(collected);
+                            return collected.stream().limit(10).toList();
+                        }
+                ));
+
+        return BookConverter.toSuggestBooksResultDTO(randomBooks);
+    }
+
+    @Override
+    public BookResponseDTO.SuggestBooksResultDTO suggestBooksForUser(Member member) {
+        List<BookCategory> preferedCategories = member.getPreferedCategories().stream()
+                .map(MemberPreferedCategory::getBookCategory)
+                .collect(Collectors.toList());
+
+        if (preferedCategories.isEmpty()) {
+            throw new BookHandler(ErrorStatus.CATEGORY_NOT_FOUND);
+        }
+
+        List<Book> books = bookRepository.findBooksByCategories(preferedCategories);
 
         // 최대 10권을 랜덤으로 선택
         List<Book> randomBooks = books.stream()

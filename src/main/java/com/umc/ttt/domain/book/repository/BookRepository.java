@@ -1,9 +1,11 @@
 package com.umc.ttt.domain.book.repository;
 
 import com.umc.ttt.domain.book.entity.Book;
+import com.umc.ttt.domain.book.entity.BookCategory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
         ORDER BY b.id ASC
     """)
     List<Book> findBooksByKeyword(String keyword, long cursor, Pageable pageable);
+
+    @Query("SELECT b FROM Book b WHERE b.bookCategory IN :categories")
+    List<Book> findBooksByCategories(List<BookCategory> categories);
 
     @Query("SELECT b FROM Book b WHERE b.bookCategory.categoryName IN :bookCategoryNames")
     List<Book> findBooksByBookCategoryNames(List<String> bookCategoryNames);

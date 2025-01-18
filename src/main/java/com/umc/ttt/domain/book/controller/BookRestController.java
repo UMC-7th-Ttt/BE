@@ -3,6 +3,8 @@ package com.umc.ttt.domain.book.controller;
 import com.umc.ttt.domain.book.dto.BookResponseDTO;
 import com.umc.ttt.domain.book.service.BookCommandService;
 import com.umc.ttt.domain.book.service.BookQueryService;
+import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.member.repository.MemberRepository;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +19,7 @@ public class BookRestController {
 
     private final BookCommandService bookCommandService;
     private final BookQueryService bookQueryService;
+    private final MemberRepository memberRepository;
 
     @PostMapping("/fetch")
     @Operation(summary = "알라딘 Open API 데이터 저장", description = "서버 테스트용 api입니다. 연동x")
@@ -41,8 +44,8 @@ public class BookRestController {
 
     @GetMapping("/search/suggestions")
     @Operation(
-            summary = "책 카테고리별 추천 검색어",
-            description = "책 카테고리별 추천 검색어 API입니다. query string으로 카테고리 이름을 전달해주세요.\n\n" +
+            summary = "책 카테고리별 추천 검색어 조회",
+            description = "책 카테고리별 추천 검색어 조회 API입니다. query string으로 카테고리 이름을 전달해주세요.\n\n" +
                     "사용 가능한 카테고리 목록:\n" +
                     "- `koreanLiterature`: 한국 문학\n" +
                     "- `humanities`: 인문\n" +
@@ -54,8 +57,17 @@ public class BookRestController {
     @Parameters({
             @Parameter(name = "categoryName", description = "카테고리 이름")
     })
-    public ApiResponse<BookResponseDTO.SuggestBooksResultDTO> suggestBooks(@RequestParam(value = "categoryName", required = true) String categoryName) {
-        BookResponseDTO.SuggestBooksResultDTO books = bookQueryService.suggestBooks(categoryName);
+    public ApiResponse<BookResponseDTO.SuggestBooksResultDTO> suggestBooksByBookCategory(@RequestParam(value = "categoryName", required = true) String categoryName) {
+        BookResponseDTO.SuggestBooksResultDTO books = bookQueryService.suggestBooksByBookCategory(categoryName);
+        return ApiResponse.onSuccess(books);
+    }
+
+    @GetMapping("/search/user-suggestions")
+    @Operation(summary = "책 사용자별 추천 검색어 조회", description = "책 사용자별 추천 검색어 조회 API이며, 사용자의 취향을 기반으로 추천됩니다.")
+    public ApiResponse<BookResponseDTO.SuggestBooksResultDTO> suggestBooksForUser() {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        BookResponseDTO.SuggestBooksResultDTO books = bookQueryService.suggestBooksForUser(member);
         return ApiResponse.onSuccess(books);
     }
 }

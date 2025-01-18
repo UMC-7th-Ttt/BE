@@ -6,6 +6,8 @@ import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,4 +35,7 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;  // 로그인 타입(EMAIL, GOOGLE)
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberPreferedCategory> preferedCategories;
 }
