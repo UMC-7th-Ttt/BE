@@ -39,9 +39,9 @@ public class PlaceConverter {
                 .build();
     }
 
-    private static double getUserRating(Place place, Member member) {
+    private static Double getUserRating(Place place, Member member) {
         // TODO: 사용자 평점 계산 로직 - 추후 구현
-        return 0.0;
+        return null;
     }
 
 }
