@@ -11,7 +11,6 @@ import lombok.*;
 public class BookCategory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "book_category_id", nullable = false)
     private Long id;
 

@@ -39,6 +39,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // 책 관련 에러
     BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOK401", "책을 찾을 수 없습니다."),
 
+    // 책 카테고리
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKCATEGORY404", "해당 카테고리가 존재하지 않습니다."),
+
     // 북레터
     BOOKLETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKLETTER401", "북레터를 찾을 수 없습니다."),
     BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다.");

@@ -11,7 +11,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +36,40 @@ public class BookQueryServiceImpl implements BookQueryService {
         boolean hasNext = books.size() > limit;
         List<Book> paginatedBooks = hasNext ? books.subList(0, limit) : books;
 
-        return BookConverter.toSearchBooksResultDTO(paginatedBooks, nextCursor, limit, hasNext);
+        return BookConverter.toSearchBookResultDTO(paginatedBooks, nextCursor, limit, hasNext);
+    }
+
+    @Override
+    public BookResponseDTO.SuggestBooksResultDTO suggestBooks(String categoryName) {
+
+        // 카테고리 매핑 정의
+        Map<String, List<String>> categoryMapping = Map.of(
+                "koreanLiterature", Arrays.asList("판타지", "미스터리", "로맨스", "소설", "시"),
+                "humanities", Arrays.asList("역사", "철학", "예술", "인문"),
+                "essayAndTravel", Arrays.asList("힐링", "여행", "에세이", "자기계발"),
+                "selfDevelopment", Arrays.asList("성장", "트렌드"),
+                "socialAndNaturalSciences", Arrays.asList("비즈니스", "심리학", "과학", "공학", "사회과학"),
+                "worldLiterature", Arrays.asList("고전", "세계사", "외국문학")
+        );
+
+        List<String> bookCategoryNames = categoryMapping.getOrDefault(categoryName, List.of());
+
+        if (bookCategoryNames.isEmpty()) {
+            throw new BookHandler(ErrorStatus.CATEGORY_NOT_FOUND);
+        }
+
+        List<Book> books = bookRepository.findBooksByBookCategoryNames(bookCategoryNames);
+
+        // 최대 10권을 랜덤으로 선택
+        List<Book> randomBooks = books.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        collected -> {
+                            Collections.shuffle(collected);
+                            return collected.stream().limit(10).toList();
+                        }
+                ));
+
+        return BookConverter.toSuggestBooksResultDTO(randomBooks);
     }
 }

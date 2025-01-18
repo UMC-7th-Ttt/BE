@@ -19,4 +19,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
         ORDER BY b.id ASC
     """)
     List<Book> findBooksByKeyword(String keyword, long cursor, Pageable pageable);
+
+    @Query("SELECT b FROM Book b WHERE b.bookCategory.categoryName IN :bookCategoryNames")
+    List<Book> findBooksByBookCategoryNames(List<String> bookCategoryNames);
 }

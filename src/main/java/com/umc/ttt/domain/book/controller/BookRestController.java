@@ -38,4 +38,24 @@ public class BookRestController {
         BookResponseDTO.SearchBookResultDTO books = bookQueryService.searchBooks(keyword, cursor, limit);
         return ApiResponse.onSuccess(books);
     }
+
+    @GetMapping("/search/suggestions")
+    @Operation(
+            summary = "책 카테고리별 추천 검색어",
+            description = "책 카테고리별 추천 검색어 API입니다. query string으로 카테고리 이름을 전달해주세요.\n\n" +
+                    "사용 가능한 카테고리 목록:\n" +
+                    "- `koreanLiterature`: 한국 문학\n" +
+                    "- `humanities`: 인문\n" +
+                    "- `selfDevelopment`: 자기계발\n" +
+                    "- `essayAndTravel`: 에세이/여행\n" +
+                    "- `socialAndNaturalSciences`: 사회/자연과학\n" +
+                    "- `worldLiterature`: 세계문학"
+    )
+    @Parameters({
+            @Parameter(name = "categoryName", description = "카테고리 이름")
+    })
+    public ApiResponse<BookResponseDTO.SuggestBooksResultDTO> suggestBooks(@RequestParam(value = "categoryName", required = true) String categoryName) {
+        BookResponseDTO.SuggestBooksResultDTO books = bookQueryService.suggestBooks(categoryName);
+        return ApiResponse.onSuccess(books);
+    }
 }

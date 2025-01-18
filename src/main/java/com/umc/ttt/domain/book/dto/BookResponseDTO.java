@@ -21,6 +21,14 @@ public class BookResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class SuggestBooksResultDTO {
+        private List<BookInfoDTO> books;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class BookInfoDTO {
         private Long id;
         private String cover;

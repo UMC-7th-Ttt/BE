@@ -45,22 +45,12 @@ public class BookCommandServiceImpl implements BookCommandService {
             throw new RuntimeException("환경변수 ALADIN_TTBKEY가 설정되어 있지 않습니다.");
         }
 
-        List<BookFetchDTO.Item> allItems = new ArrayList<>();
         int maxResults = 50;
         int startPage = 1;
 
-        // CategoryId 목록
-        // 과학, 여행에세이, 외국문학, 시, 장르소설, 자기계발, 인문, 소설
-        // 판타지, 미스터리, 고전, 성장, 심리학, 비즈니스, 역사, 논리, 로맨스, 감성, 힐링, 종교학, 문화, 철학, 예술
-        List<Integer> categoryIds = List.of(987, 51377, 50955, 50940, 112011, 336, 656, 1,
-                50928, 50926, 103639, 51235, 51395, 2172, 74, 51412, 50935, 50917, 70236, 1237, 2177, 51387, 517);
-
-        for (int i = 0; i < categoryIds.size(); i++) {
-            int categoryId = categoryIds.get(i);
-            int bookCategoryId = i + 1;
-
-            BookCategory bookCategory = bookCategoryRepository.findById((long) bookCategoryId)
-                    .orElseThrow(() -> new RuntimeException("BookCategoryId " + bookCategoryId + "를 찾을 수 없습니다."));
+        // 상품 리스트 API 가져오기
+        for (BookCategory category : bookCategoryRepository.findAll()) {
+            Long categoryId = category.getId();
 
             String apiUrl = String.format(baseUrl + queryParams + "&CategoryId=%d", ttbkey, maxResults, startPage, categoryId);
 
@@ -71,6 +61,7 @@ public class BookCommandServiceImpl implements BookCommandService {
                 continue;
             }
 
+            // 상품 조회 API 가져오기
             for (BookFetchDTO.Item item : response.getItem()) {
                 if (bookRepository.findByIsbn(item.getIsbn()).isPresent()) {
                     continue;
@@ -86,9 +77,7 @@ public class BookCommandServiceImpl implements BookCommandService {
                     item.setHasEbook(lookupItem.isHasEbook());
                 }
 
-                allItems.add(item);
-
-                Book bookEntity = BookConverter.toEntity(item, bookCategory);
+                Book bookEntity = BookConverter.toEntity(item, category);
                 bookRepository.save(bookEntity);
             }
         }

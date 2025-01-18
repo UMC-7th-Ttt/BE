@@ -26,24 +26,37 @@ public class BookConverter {
                 .build();
     }
 
-    public static BookResponseDTO.SearchBookResultDTO toSearchBooksResultDTO(List<Book> books, long nextCursor, int limit, boolean hasNext) {
+    public static BookResponseDTO.SearchBookResultDTO toSearchBookResultDTO(List<Book> books, long nextCursor, int limit, boolean hasNext) {
         List<BookResponseDTO.BookInfoDTO> bookInfoList = books.stream()
-                .map(book -> BookResponseDTO.BookInfoDTO.builder()
-                        .id(book.getId())
-                        .cover(book.getCover())
-                        .title(book.getTitle())
-                        .author(book.getAuthor())
-                        .category(book.getBookCategory().getCategoryName())
-                        .publisher(book.getPublisher())
-                        .build())
+                .map(book -> toBookInfoDTO(book))
                 .collect(Collectors.toList());
-
 
         return BookResponseDTO.SearchBookResultDTO.builder()
                 .books(bookInfoList)
                 .nextCursor(nextCursor)
                 .limit(limit)
                 .hasNext(hasNext)
+                .build();
+    }
+
+    public static BookResponseDTO.SuggestBooksResultDTO toSuggestBooksResultDTO(List<Book> books) {
+        List<BookResponseDTO.BookInfoDTO> bookInfoList = books.stream()
+                .map(book -> toBookInfoDTO(book))
+                .collect(Collectors.toList());
+
+        return BookResponseDTO.SuggestBooksResultDTO.builder()
+                .books(bookInfoList)
+                .build();
+    }
+
+    private static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book) {
+        return BookResponseDTO.BookInfoDTO.builder()
+                .id(book.getId())
+                .cover(book.getCover())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .category(book.getBookCategory().getCategoryName())
+                .publisher(book.getPublisher())
                 .build();
     }
 }
