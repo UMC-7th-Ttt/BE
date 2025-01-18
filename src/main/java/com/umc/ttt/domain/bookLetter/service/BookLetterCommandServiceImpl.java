@@ -10,6 +10,8 @@ import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.BookHandler;
 import com.umc.ttt.global.apiPayload.exception.handler.BookLetterHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,5 +74,21 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
             throw new BookLetterHandler(ErrorStatus.BOOKLETTER_NOT_FOUND);
         }
         bookLetterRepository.deleteById(bookLetterId);
+    }
+
+    // 북레터 리스트
+    @Override
+    @Transactional
+    public Page<BookLetter> getBookLetterPreViewList(Integer page){
+        Page<BookLetter> bookLetterPreviewPage = bookLetterRepository.findAll(PageRequest.of(page,10));
+        return bookLetterPreviewPage;
+    }
+
+    // 특정 북레터 상세 정보 보기
+    @Override
+    @Transactional
+    public BookLetter getBookLetter(Long bookLetterId) {
+       BookLetter bookLetter = bookLetterRepository.findById(bookLetterId).orElseThrow(()->new BookLetterHandler(ErrorStatus.BOOKLETTER_NOT_FOUND));
+        return bookLetter;
     }
 }
