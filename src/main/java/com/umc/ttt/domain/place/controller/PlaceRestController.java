@@ -9,6 +9,8 @@ import com.umc.ttt.domain.place.service.PlaceCommandService;
 import com.umc.ttt.domain.place.service.PlaceQueryService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -53,4 +55,24 @@ public class PlaceRestController {
         Member member = memberRepository.findById(1L).get();
         return ApiResponse.onSuccess(placeQueryService.getPlace(placeId, member));
     }
+
+    @GetMapping
+    @Operation(summary = "공간 목록 조회 - 가까운순, 추천순", description = "무한 스크롤 방식으로 공간 목록을 조회합니다.\n\n" +
+            "첫 페이지 조회 시 cursor 값으로 0을 전달해주세요.\n\n" +
+            "첫 페이지가 아닌 경우 이전 응답의 hasNext가 true일 때, nextCursor 값을 cursor로 전달해주세요.")
+    @Parameters({
+            @Parameter(name = "lat", description = "현재 위치의 위도. 가까운순으로 조회할 때만 전달해주세요."),
+            @Parameter(name = "lon", description = "현재 위치의 경도. 가까운순으로 조회할 때만 전달해주세요."),
+            @Parameter(name = "sort", description = "전체: all, 서점: bookstore, 북카페: cafe"),
+    })
+    private ApiResponse<PlaceResponseDTO.PlaceListDTO> getPlaceList(@RequestParam(name = "lat", required = false) Double lat,
+                                                                    @RequestParam(name = "lon", required = false) Double lon,
+                                                                    @RequestParam(name = "sort", defaultValue = "all") String sort,
+                                                                    @RequestParam(name = "cursor", defaultValue = "0") Long cursor,
+                                                                    @RequestParam(name = "limit", defaultValue = "10") int limit) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        return ApiResponse.onSuccess(placeQueryService.getPlaceList(lat, lon, sort, cursor, limit, member));
+    }
+
 }

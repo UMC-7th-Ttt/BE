@@ -1,5 +1,6 @@
 package com.umc.ttt.domain.scrap.repository;
 
+import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.scrap.entity.PlaceScrap;
 import com.umc.ttt.domain.scrap.entity.ScrapFolder;
@@ -21,4 +22,9 @@ public interface PlaceScrapRepository extends JpaRepository<PlaceScrap, Long> {
     @Query("SELECT ps FROM PlaceScrap ps WHERE ps.scrapFolder.id = :folderId " +
             "AND (:cursor = 0 OR ps.id < :cursor) ORDER BY ps.id DESC ")
     List<PlaceScrap> findPlaceScrapsWithCursor(@Param("folderId") Long folderId, @Param("cursor") Long cursor, Pageable pageable);
+
+    @Query("SELECT ps.place.id FROM PlaceScrap ps WHERE ps.scrapFolder.member = :member AND ps.place IN :places")
+    List<Long> findScrapedPlaceIdsByMemberAndPlaces(@Param("member") Member member, @Param("places") List<Place> places);
+
+    boolean existsByScrapFolderMemberAndPlace(Member member, Place place);
 }
