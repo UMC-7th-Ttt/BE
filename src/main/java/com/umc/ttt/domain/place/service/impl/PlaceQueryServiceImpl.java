@@ -27,8 +27,9 @@ public class PlaceQueryServiceImpl implements PlaceQueryService {
     public PlaceResponseDTO.PlaceDTO getPlace(Long placeId, Member member) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceHandler(ErrorStatus.PLACE_NOT_FOUND));
+        boolean isScraped = placeScrapRepository.existsByScrapFolderMemberAndPlace(member, place);
         boolean isAdmin = member.getRole() == Role.ADMIN;
-        return PlaceConverter.toPlaceDTO(place, member, isAdmin);
+        return PlaceConverter.toPlaceDTO(place, member, isScraped, isAdmin);
     }
 
     @Override

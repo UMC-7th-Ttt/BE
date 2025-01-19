@@ -25,4 +25,6 @@ public interface PlaceScrapRepository extends JpaRepository<PlaceScrap, Long> {
 
     @Query("SELECT ps.place.id FROM PlaceScrap ps WHERE ps.scrapFolder.member = :member AND ps.place IN :places")
     List<Long> findScrapedPlaceIdsByMemberAndPlaces(@Param("member") Member member, @Param("places") List<Place> places);
+
+    boolean existsByScrapFolderMemberAndPlace(Member member, Place place);
 }

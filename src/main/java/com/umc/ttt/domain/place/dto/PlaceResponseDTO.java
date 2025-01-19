@@ -38,6 +38,7 @@ public class PlaceResponseDTO {
         private Double totalRating;  // 전체 평점
         private String curationTitle;
         private String curationContent;
+        private boolean isScraped;
         private boolean isAdmin;
     }
 

@@ -17,7 +17,7 @@ public class PlaceConverter {
                 .build();
     }
 
-    public static PlaceResponseDTO.PlaceDTO toPlaceDTO(Place place, Member member, boolean isAdmin) {
+    public static PlaceResponseDTO.PlaceDTO toPlaceDTO(Place place, Member member, boolean isScraped, boolean isAdmin) {
         return PlaceResponseDTO.PlaceDTO.builder()
                 .placeId(place.getId())
                 .title(place.getTitle())
@@ -37,6 +37,7 @@ public class PlaceConverter {
                 .totalRating(place.getRating()) // 전체 평점
                 .curationTitle(place.getCurationTitle())
                 .curationContent(place.getCurationContent())
+                .isScraped(isScraped)
                 .isAdmin(isAdmin)
                 .build();
     }
