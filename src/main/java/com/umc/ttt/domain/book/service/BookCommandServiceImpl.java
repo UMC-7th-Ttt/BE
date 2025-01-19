@@ -1,7 +1,7 @@
 package com.umc.ttt.domain.book.service;
 
 import com.umc.ttt.domain.book.converter.BookConverter;
-import com.umc.ttt.domain.book.dto.BookResponseDTO;
+import com.umc.ttt.domain.book.dto.BookFetchDTO;
 import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.book.entity.BookCategory;
 import com.umc.ttt.domain.book.repository.BookCategoryRepository;
@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,53 +38,46 @@ public class BookCommandServiceImpl implements BookCommandService {
     @Value("${aladin.api.ttbkey}")
     private String ttbkey;
 
+    @Override
     @Transactional
     public void fetchBooks() {
         if (ttbkey == null) {
             throw new RuntimeException("환경변수 ALADIN_TTBKEY가 설정되어 있지 않습니다.");
         }
 
-        List<BookResponseDTO.Item> allItems = new ArrayList<>();
         int maxResults = 50;
         int startPage = 1;
 
-        // CategoryId 목록
-        // 과학, 여행에세이, 외국문학, 시, 장르소설, 자기계발, 인문, 소설
-        // 판타지, 미스터리, 고전, 성장, 심리학, 비즈니스, 역사, 논리, 로맨스, 감성, 힐링, 종교학, 문화, 철학, 예술
-        List<Integer> categoryIds = List.of(987, 51377, 50955, 50940, 112011, 336, 656, 1,
-                50928, 50926, 103639, 51235, 51395, 2172, 74, 51412, 50935, 50917, 70236, 1237, 2177, 51387, 517);
-
-        for (int i = 0; i < categoryIds.size(); i++) {
-            int categoryId = categoryIds.get(i);
-            int bookCategoryId = i + 1;
-
-            BookCategory bookCategory = bookCategoryRepository.findById((long) bookCategoryId)
-                    .orElseThrow(() -> new RuntimeException("BookCategoryId " + bookCategoryId + "를 찾을 수 없습니다."));
-
+        // 상품 리스트 API 가져오기
+        for (BookCategory category : bookCategoryRepository.findAll()) {
+            Long categoryId = category.getId();
 
             String apiUrl = String.format(baseUrl + queryParams + "&CategoryId=%d", ttbkey, maxResults, startPage, categoryId);
 
-            BookResponseDTO response = restTemplate.getForObject(apiUrl, BookResponseDTO.class);
+            BookFetchDTO response = restTemplate.getForObject(apiUrl, BookFetchDTO.class);
 
             if (response == null || response.getItem() == null || response.getItem().isEmpty()) {
                 System.out.println("CategoryId " + categoryId + "에 대한 데이터가 없습니다.");
                 continue;
             }
 
-            for (BookResponseDTO.Item item : response.getItem()) {
+            // 상품 조회 API 가져오기
+            for (BookFetchDTO.Item item : response.getItem()) {
+                if (bookRepository.findByIsbn(item.getIsbn()).isPresent()) {
+                    continue;
+                }
+
                 String lookupUrl = String.format(itemLookupUrl + itemQueryParams, ttbkey, item.getIsbn());
-                BookResponseDTO lookupResponse = restTemplate.getForObject(lookupUrl, BookResponseDTO.class);
+                BookFetchDTO lookupResponse = restTemplate.getForObject(lookupUrl, BookFetchDTO.class);
 
                 if (lookupResponse != null && lookupResponse.getItem() != null && !lookupResponse.getItem().isEmpty()) {
-                    BookResponseDTO.Item lookupItem = lookupResponse.getItem().get(0);
+                    BookFetchDTO.Item lookupItem = lookupResponse.getItem().get(0);
 
                     item.setItemPage(lookupItem.getItemPage());
                     item.setHasEbook(lookupItem.isHasEbook());
                 }
 
-                allItems.add(item);
-
-                Book bookEntity = BookConverter.toEntity(item, bookCategory);
+                Book bookEntity = BookConverter.toEntity(item, category);
                 bookRepository.save(bookEntity);
             }
         }
