@@ -39,7 +39,7 @@ public class ScrapQueryServiceImpl implements ScrapQueryService {
     }
 
     @Override
-    public ScrapResponseDTO.ScrapListDTO getScrapList(Long folderId, Long bookCursor, Long placeCursor, Integer limit, Member member) {
+    public ScrapResponseDTO.ScrapListDTO getScrapList(Long folderId, Long bookCursor, Long placeCursor, int limit, Member member) {
         ScrapFolder scrapFolder = scrapFolderRepository.findByIdAndMember(folderId, member)
                 .orElseThrow(() -> new ScrapHandler(ErrorStatus.FOLDER_NOT_FOUND));
 
@@ -105,7 +105,7 @@ public class ScrapQueryServiceImpl implements ScrapQueryService {
 
         boolean hasNext = (nextBookCursor != null || nextPlaceCursor != null);
 
-        return ScrapConverter.toScrapListDTO(paginatedScraps, nextBookCursor, nextPlaceCursor, hasNext);
+        return ScrapConverter.toScrapListDTO(paginatedScraps, nextBookCursor, nextPlaceCursor, limit, hasNext);
     }
 
 }

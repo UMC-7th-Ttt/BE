@@ -56,11 +56,12 @@ public class ScrapConverter {
                 .build();
     }
 
-    public static ScrapResponseDTO.ScrapListDTO toScrapListDTO(List<ScrapResponseDTO.ScrapDTO> scraps, Long nextBookCursor, Long nextPlaceCursor, boolean hasNext) {
+    public static ScrapResponseDTO.ScrapListDTO toScrapListDTO(List<ScrapResponseDTO.ScrapDTO> scraps, Long nextBookCursor, Long nextPlaceCursor, int limit, boolean hasNext) {
         return ScrapResponseDTO.ScrapListDTO.builder()
                 .scraps(scraps)
                 .nextBookCursor(nextBookCursor)
                 .nextPlaceCursor(nextPlaceCursor)
+                .limit(limit)
                 .hasNext(hasNext)
                 .build();
     }

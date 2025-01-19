@@ -36,7 +36,7 @@ public class ScrapRestController {
     public ApiResponse<ScrapResponseDTO.ScrapListDTO> getScrapList(@PathVariable(name = "folderId") Long folderId,
                                                                            @RequestParam(name = "bookCursor", required = false) Long bookCursor,
                                                                            @RequestParam(name = "placeCursor", required = false) Long placeCursor,
-                                                                           @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
+                                                                           @RequestParam(name = "limit", defaultValue = "10") int limit) {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
         return ApiResponse.onSuccess(scrapQueryService.getScrapList(folderId, bookCursor, placeCursor, limit, member));

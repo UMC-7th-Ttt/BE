@@ -4,6 +4,8 @@ import com.umc.ttt.domain.place.entity.enums.PlaceCategory;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 public class PlaceResponseDTO {
 
     @Builder
@@ -37,6 +39,27 @@ public class PlaceResponseDTO {
         private String curationTitle;
         private String curationContent;
         private boolean isAdmin;
+    }
+
+    @Builder
+    @Getter
+    public static class PlacePreviewDTO {
+        private Long placeId;
+        private String title;
+        private PlaceCategory category;
+        private String address;
+        private String image;
+        private Double totalRating;
+        private boolean isScraped;
+    }
+
+    @Builder
+    @Getter
+    public static class PlaceListDTO {
+        private List<PlacePreviewDTO> places;
+        private Long cursor;
+        private int limit;
+        private boolean hasNext;
     }
 
 }

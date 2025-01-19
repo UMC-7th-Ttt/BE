@@ -4,6 +4,8 @@ import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.dto.PlaceResponseDTO;
 import com.umc.ttt.domain.place.entity.Place;
 
+import java.util.List;
+
 public class PlaceConverter {
 
     public static PlaceResponseDTO.CurationDTO toCurationPreviewDTO(Place place, Member member) {
@@ -42,6 +44,31 @@ public class PlaceConverter {
     private static Double getUserRating(Place place, Member member) {
         // TODO: 사용자 평점 계산 로직 - 추후 구현
         return null;
+    }
+
+    public static PlaceResponseDTO.PlacePreviewDTO toPlacePreviewDTO(Place place, boolean isScraped) {
+        return PlaceResponseDTO.PlacePreviewDTO.builder()
+                .placeId(place.getId())
+                .title(place.getTitle())
+                .category(place.getCategory())
+                .address(place.getAddress())
+                .image(place.getImage())
+                .totalRating(place.getRating())
+                .isScraped(isScraped)
+                .build();
+    }
+
+    public static PlaceResponseDTO.PlaceListDTO toPlaceListDTO(List<Place> places, Long nextCursor, int limit, boolean hasNext, List<Long> scrapedPlaceIds) {
+        List<PlaceResponseDTO.PlacePreviewDTO> placePreviewDTOs = places.stream()
+                .map(place -> toPlacePreviewDTO(place, scrapedPlaceIds.contains(place.getId())))
+                .toList();
+
+        return PlaceResponseDTO.PlaceListDTO.builder()
+                .places(placePreviewDTOs)
+                .cursor(nextCursor)
+                .limit(limit)
+                .hasNext(hasNext)
+                .build();
     }
 
 }

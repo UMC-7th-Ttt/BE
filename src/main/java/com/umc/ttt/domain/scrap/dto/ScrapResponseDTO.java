@@ -44,6 +44,7 @@ public class ScrapResponseDTO {
         private List<ScrapDTO> scraps;
         private Long nextBookCursor;
         private Long nextPlaceCursor;
+        private int limit;
         private boolean hasNext;
     }
 }

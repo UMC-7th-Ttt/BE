@@ -8,5 +8,5 @@ import java.util.List;
 public interface ScrapQueryService {
     List<ScrapResponseDTO.ScrapFolderDTO> getScrapFolders(Member member);
 
-    ScrapResponseDTO.ScrapListDTO getScrapList(Long folderId, Long bookCursor, Long placeCursor, Integer limit, Member member);
+    ScrapResponseDTO.ScrapListDTO getScrapList(Long folderId, Long bookCursor, Long placeCursor, int limit, Member member);
 }
