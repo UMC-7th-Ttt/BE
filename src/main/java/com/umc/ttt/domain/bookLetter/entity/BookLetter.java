@@ -46,4 +46,5 @@ public class BookLetter extends BaseEntity {
 
     @OneToMany(mappedBy = "bookLetter", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BookLetterBook> books = new ArrayList<>();
+
 }
