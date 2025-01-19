@@ -1,5 +1,6 @@
 package com.umc.ttt.domain.bookLetter.dto;
 
+import com.umc.ttt.domain.bookLetter.validation.annotataion.DuplicateBooks;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import java.util.List;
 public class BookLetterRequestDTO {
     @Getter
     public static class CRDto {
+        @DuplicateBooks
         @Size(min = 5, max = 5, message = "한 북레터 당 5권을 제공 필수입니다.")
         List<Long> booksId;
 
