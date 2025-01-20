@@ -3,14 +3,18 @@ package com.umc.ttt.domain.member.controller;
 import com.umc.ttt.domain.member.dto.MemberSignUpDTO;
 import com.umc.ttt.domain.member.service.MemberCommandService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
+import com.umc.ttt.global.jwt.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberCommandService memberCommandService;
+    private final JwtService jwtService;
 
     @PostMapping("/api/sign-up")
     @Operation(summary = "회원가입", description = "서버 테스트용 api입니다. 연동x")
@@ -28,5 +32,12 @@ AccessToken을 헤더에 담아 보내서 인증을 통과해야만 접근이 �
     @Operation(summary = "jwtTest 요청", description = "서버 테스트용 api입니다. 연동x")
     public ApiResponse<String> jwtTest() {
         return ApiResponse.onSuccess("jwtTest 요청 성공");
+    }
+
+    @PostMapping(value = "/api/logout")
+    @Operation(summary = "로그아웃", description = "")
+    public ApiResponse<String> logout(HttpServletRequest request) throws Exception {
+        memberCommandService.logout(request);
+        return ApiResponse.onSuccess("로그아웃에 성공했습니다!");
     }
 }
