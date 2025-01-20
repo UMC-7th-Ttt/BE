@@ -48,6 +48,12 @@ dependencies {
 
 	//jwt
 	implementation 'com.auth0:java-jwt:4.2.1'
+
+	//oauth2Service
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//thymeleaf
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
 }
 
 tasks.named('test') {
