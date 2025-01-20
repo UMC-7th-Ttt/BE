@@ -75,4 +75,20 @@ public class ScrapRestController {
         return ApiResponse.onSuccess(scrapCommandService.removePlaceScrap(placeId, member));
     }
 
+    @PostMapping("books/{bookId}/scraps")
+    @Operation(summary = "책 스크랩", description = "folder에 폴더 이름을 전달해주세요. (ex. 도서)")
+    public ApiResponse<ScrapResponseDTO.BookScrapDTO> addBookScrap(@PathVariable(name = "bookId") Long bookId,
+                                                                   @RequestParam(name = "folder") String folder) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        return ApiResponse.onSuccess(scrapCommandService.addBookScrap(bookId, folder, member));
+    }
+
+    @DeleteMapping("/books/{bookId}/scraps")
+    @Operation(summary = "공간 스크랩 취소")
+    public ApiResponse<ScrapResponseDTO.BookScrapDTO> removeBookScrap(@PathVariable(name = "bookId") Long bookId) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        return ApiResponse.onSuccess(scrapCommandService.removeBookScrap(bookId, member));
+    }
 }
