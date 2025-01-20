@@ -85,7 +85,7 @@ public class ScrapRestController {
     }
 
     @DeleteMapping("/books/{bookId}/scraps")
-    @Operation(summary = "공간 스크랩 취소")
+    @Operation(summary = "책 스크랩 취소")
     public ApiResponse<ScrapResponseDTO.BookScrapDTO> removeBookScrap(@PathVariable(name = "bookId") Long bookId) {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
