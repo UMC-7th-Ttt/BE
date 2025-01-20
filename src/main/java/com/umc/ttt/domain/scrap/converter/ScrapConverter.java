@@ -1,5 +1,6 @@
 package com.umc.ttt.domain.scrap.converter;
 
+import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
@@ -16,6 +17,14 @@ public class ScrapConverter {
         return ScrapResponseDTO.PlaceScrapDTO.builder()
                 .memberId(member.getId())
                 .placeId(place.getId())
+                .isScraped(isScraped)
+                .build();
+    }
+
+    public static ScrapResponseDTO.BookScrapDTO toBookScrapDTO(Book book, Member member, boolean isScraped) {
+        return ScrapResponseDTO.BookScrapDTO.builder()
+                .memberId(member.getId())
+                .bookId(book.getId())
                 .isScraped(isScraped)
                 .build();
     }
