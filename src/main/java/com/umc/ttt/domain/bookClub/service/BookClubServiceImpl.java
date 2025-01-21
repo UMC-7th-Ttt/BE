@@ -24,7 +24,7 @@ public class BookClubServiceImpl implements BookClubService{
     public BookClub addBookClub(BookClubRequestDTO.AddUpdateDTO request) {
         BookLetterBook bookLetterBook = bookLetterBookRepository.findById(request.getBookLetterBookId()).orElseThrow(() -> new BookLetterBookHandler(ErrorStatus.BOOK_LETTER_BOOK_NOT_FOUND));
 
-        boolean existBookClub = bookClubRepository.existsByBookLetterBook(bookLetterBook);
+        boolean existBookClub = bookClubRepository.existsByBookLetterBookId(request.getBookLetterBookId());
         if(existBookClub) {
             throw new BookLetterBookHandler(ErrorStatus.BOOK_LETTER_BOOK_ALREADY_EXIST);
         }
@@ -39,12 +39,14 @@ public class BookClubServiceImpl implements BookClubService{
         BookClub bookClub = bookClubRepository.findById(bookClubId).orElseThrow(()->new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND));
         BookLetterBook bookLetterBook = bookLetterBookRepository.findById(request.getBookLetterBookId()).orElseThrow(() -> new BookLetterBookHandler(ErrorStatus.BOOK_LETTER_BOOK_NOT_FOUND));
 
-        boolean existBookClub = bookClubRepository.existsByBookLetterBook(bookLetterBook);
-        if(existBookClub) {
+        boolean existBookLetterBook = bookClubRepository.existsByBookLetterBookId(request.getBookLetterBookId());
+        if(existBookLetterBook && !bookClub.getBookLetterBook().getId().equals(request.getBookLetterBookId())) {
             throw new BookLetterBookHandler(ErrorStatus.BOOK_LETTER_BOOK_ALREADY_EXIST);
         }
 
-        bookClub.setBookLetterBook(bookLetterBook);
+        if(!bookClub.getBookLetterBook().getId().equals(request.getBookLetterBookId())){
+            bookClub.setBookLetterBook(bookLetterBook);
+        }
         bookClub.setStartDate(request.getStartDate());
         bookClub.setEndDate(request.getEndDate());
         bookClub.setComment(request.getComment());

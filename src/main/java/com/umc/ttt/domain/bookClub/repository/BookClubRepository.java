@@ -6,5 +6,5 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookClubRepository extends JpaRepository<BookClub, Long> {
-    boolean existsByBookLetterBook(BookLetterBook bookLetterBookId);
+    boolean existsByBookLetterBookId(Long bookLetterBookId);
 }
