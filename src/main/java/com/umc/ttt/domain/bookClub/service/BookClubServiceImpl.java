@@ -51,4 +51,12 @@ public class BookClubServiceImpl implements BookClubService{
 
         return bookClubRepository.save(bookClub);
     }
+
+    @Override
+    public void deleteBookClub(Long bookClubId) {
+        if(!bookClubRepository.existsById(bookClubId)) {
+            throw new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND);
+        }
+        bookClubRepository.deleteById(bookClubId);
+    }
 }

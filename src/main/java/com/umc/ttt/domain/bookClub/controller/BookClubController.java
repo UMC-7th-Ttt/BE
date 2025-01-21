@@ -31,4 +31,10 @@ public class BookClubController {
         return ApiResponse.onSuccess(BookClubConvert.addUpdateResultDTO(bookClub));
     }
 
+    @DeleteMapping("/{bookClubId}")
+    @Operation(summary = "북클럽 삭제",description = "북클럽을 삭제하는 API입니다.")
+    public ApiResponse<Void> deleteBookClub(@PathVariable(name="bookClubId") Long bookClubId){
+        bookClubService.deleteBookClub(bookClubId);
+        return ApiResponse.onSuccess(null);
+    }
 }
