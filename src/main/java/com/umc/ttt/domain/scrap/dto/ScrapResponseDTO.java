@@ -20,6 +20,14 @@ public class ScrapResponseDTO {
 
     @Builder
     @Getter
+    public static class BookScrapDTO {
+        private Long memberId;
+        private Long bookId;
+        private boolean isScraped;
+    }
+
+    @Builder
+    @Getter
     @RequiredArgsConstructor
     @AllArgsConstructor
     public static class ScrapFolderDTO {

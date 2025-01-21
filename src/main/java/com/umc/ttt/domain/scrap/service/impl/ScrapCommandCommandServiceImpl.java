@@ -1,9 +1,12 @@
 package com.umc.ttt.domain.scrap.service.impl;
 
+import com.umc.ttt.domain.book.entity.Book;
+import com.umc.ttt.domain.book.repository.BookRepository;
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
+import com.umc.ttt.domain.scrap.entity.BookScrap;
 import com.umc.ttt.domain.scrap.entity.ScrapFolder;
 import com.umc.ttt.domain.scrap.repository.BookScrapRepository;
 import com.umc.ttt.domain.scrap.repository.PlaceScrapRepository;
@@ -12,6 +15,7 @@ import com.umc.ttt.domain.scrap.entity.PlaceScrap;
 import com.umc.ttt.domain.scrap.repository.ScrapFolderRepository;
 import com.umc.ttt.domain.scrap.service.ScrapCommandService;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
+import com.umc.ttt.global.apiPayload.exception.handler.BookHandler;
 import com.umc.ttt.global.apiPayload.exception.handler.PlaceHandler;
 import com.umc.ttt.global.apiPayload.exception.handler.ScrapHandler;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
 
     private final PlaceRepository placeRepository;
     private final PlaceScrapRepository placeScrapRepository;
+    private final BookRepository bookRepository;
     private final BookScrapRepository bookScrapRepository;
     private final ScrapFolderRepository scrapFolderRepository;
 
@@ -105,6 +110,41 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
     }
 
     @Override
+    public ScrapResponseDTO.BookScrapDTO addBookScrap(Long bookId, String folder, Member member) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookHandler(ErrorStatus.BOOK_NOT_FOUND));
+
+        if (folder.equals("공간")) {
+            throw new ScrapHandler(ErrorStatus.INVALID_FOLDER);
+        }
+
+        // 폴더가 이미 존재하는지 확인
+        ScrapFolder scrapFolder = scrapFolderRepository.findByMemberAndName(member, folder)
+                .orElseGet(() -> {
+                    // 폴더가 없으면 새로 생성
+                    ScrapFolder newFolder = ScrapFolder.builder()
+                            .name(folder)
+                            .member(member)
+                            .build();
+                    return scrapFolderRepository.save(newFolder);
+                });
+
+        // 스크랩 내역이 존재하는지 확인(모든 폴더 내에서)
+        if (bookScrapRepository.existsByBook(book)) {
+            throw new BookHandler(ErrorStatus.SCRAP_ALREADY_EXIST);
+        }
+
+        // 스크랩 저장
+        BookScrap bookScrap = BookScrap.builder()
+                .book(book)
+                .scrapFolder(scrapFolder)
+                .build();
+        bookScrapRepository.save(bookScrap);
+
+        return ScrapConverter.toBookScrapDTO(book, member, true);
+    }
+
+    @Override
     public ScrapResponseDTO.PlaceScrapDTO removePlaceScrap(Long placeId, Member member) {
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new PlaceHandler(ErrorStatus.PLACE_NOT_FOUND));
@@ -115,6 +155,19 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
         placeScrapRepository.delete(placeScrap);
 
         return ScrapConverter.toPlaceScrapDTO(place, member, false);
+    }
+
+    @Override
+    public ScrapResponseDTO.BookScrapDTO removeBookScrap(Long bookId, Member member) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookHandler(ErrorStatus.BOOK_NOT_FOUND));
+
+        BookScrap bookScrap = bookScrapRepository.findByBook(book)
+                .orElseThrow(() -> new BookHandler(ErrorStatus.BOOK_NOT_FOUND));
+
+        bookScrapRepository.delete(bookScrap);
+
+        return ScrapConverter.toBookScrapDTO(book, member, false);
     }
 
 }
