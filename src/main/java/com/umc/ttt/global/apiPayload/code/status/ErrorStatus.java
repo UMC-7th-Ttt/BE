@@ -49,7 +49,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 북레터-책 테이블 연관 에러
     BOOK_LETTER_BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKLETTERBOOK401","존재하지 않는 북레터 북입니다."),
-    BOOK_LETTER_BOOK_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"BOOKLETTERBOOK402", "이미 존재하는 북레터 북입니다."),
+    BOOK_LETTER_BOOK_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"BOOKLETTERBOOK402", "이미 진행되는 북레터 북입니다."),
+
+    // 북클럽 관련
+    BOOK_CLUB_NOT_FOUND(HttpStatus.NOT_FOUND,"BOOKCLUB401", "존재하지 않는 북클럽입니다."),
 
     // 페이지 관련
     INVALID_PAGE(HttpStatus.BAD_REQUEST, "PAGE401", "존재하지 않는 페이지입니다.");

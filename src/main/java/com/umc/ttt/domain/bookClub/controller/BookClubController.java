@@ -24,4 +24,11 @@ public class BookClubController {
         return ApiResponse.onSuccess(BookClubConvert.addUpdateResultDTO(bookClub));
     }
 
+    @PatchMapping("/{bookClubId}")
+    @Operation(summary = "북클럽 수정",description = "북클럽을 수정하는 API입니다.")
+    public ApiResponse<BookClubResponseDTO.AddUpdateResultDTO> update(@PathVariable(name="bookClubId") Long bookClubId, @RequestBody @Valid BookClubRequestDTO.AddUpdateDTO request) {
+        BookClub bookClub = bookClubService.updateBookClub(bookClubId,request);
+        return ApiResponse.onSuccess(BookClubConvert.addUpdateResultDTO(bookClub));
+    }
+
 }
