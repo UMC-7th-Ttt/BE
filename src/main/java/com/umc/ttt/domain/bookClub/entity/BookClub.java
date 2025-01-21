@@ -1,6 +1,7 @@
 package com.umc.ttt.domain.bookClub.entity;
 
 import com.umc.ttt.domain.bookLetter.entity.BookLetter;
+import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +29,7 @@ public class BookClub extends BaseEntity {
     @Column(nullable = false)
     private String comment; // 한줄 추천 멘트
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_letter_id")
-    private BookLetter bookLetter;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="book_letter_book_id", nullable = true)
+    private BookLetterBook bookLetterBook;
 }
