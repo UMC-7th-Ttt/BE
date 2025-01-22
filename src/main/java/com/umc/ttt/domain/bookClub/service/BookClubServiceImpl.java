@@ -50,6 +50,7 @@ public class BookClubServiceImpl implements BookClubService{
         bookClub.setStartDate(request.getStartDate());
         bookClub.setEndDate(request.getEndDate());
         bookClub.setComment(request.getComment());
+        bookClub.setRecruitNumber(request.getRecruitNumber());
 
         return bookClubRepository.save(bookClub);
     }

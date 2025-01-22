@@ -18,6 +18,7 @@ public class BookClubConvert {
                 .endDate(request.getEndDate())
                 .comment(request.getComment())
                 .bookLetterBook(bookLetterBook)
+                .recruitNumber(request.getRecruitNumber())
                 .build();
     }
 }
