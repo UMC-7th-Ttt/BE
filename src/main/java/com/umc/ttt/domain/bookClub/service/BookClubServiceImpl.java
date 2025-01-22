@@ -47,10 +47,7 @@ public class BookClubServiceImpl implements BookClubService{
         if(!bookClub.getBookLetterBook().getId().equals(request.getBookLetterBookId())){
             bookClub.setBookLetterBook(bookLetterBook);
         }
-        bookClub.setStartDate(request.getStartDate());
-        bookClub.setEndDate(request.getEndDate());
-        bookClub.setComment(request.getComment());
-        bookClub.setRecruitNumber(request.getRecruitNumber());
+        bookClub.setBookClub(request);
 
         return bookClubRepository.save(bookClub);
     }
