@@ -24,4 +24,8 @@ public class PlaceScrap extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scrap_folder_id")
     private ScrapFolder scrapFolder;
+
+    public void changeScrapFolder(ScrapFolder newFolder) {
+        this.scrapFolder = newFolder;
+    }
 }

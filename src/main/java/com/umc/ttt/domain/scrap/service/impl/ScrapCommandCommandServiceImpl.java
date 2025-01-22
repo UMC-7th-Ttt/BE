@@ -5,6 +5,7 @@ import com.umc.ttt.domain.book.repository.BookRepository;
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
+import com.umc.ttt.domain.scrap.dto.ScrapRequestDTO;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 import com.umc.ttt.domain.scrap.entity.BookScrap;
 import com.umc.ttt.domain.scrap.entity.ScrapFolder;
@@ -21,6 +22,8 @@ import com.umc.ttt.global.apiPayload.exception.handler.ScrapHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -168,6 +171,74 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
         bookScrapRepository.delete(bookScrap);
 
         return ScrapConverter.toBookScrapDTO(book, member, false);
+    }
+
+    @Override
+    public void removeScraps(ScrapRequestDTO.ScrapRemoveRequestDTO scrapRemoveRequestDTO) {
+        for (ScrapRequestDTO.ScrapRemoveRequestDTO.ScrapItemDTO scrapItem : scrapRemoveRequestDTO.getScraps()) {
+            if ("place".equalsIgnoreCase(scrapItem.getType())) {
+                PlaceScrap placeScrap = placeScrapRepository.findById(scrapItem.getScrapId())
+                        .orElseThrow(() -> new PlaceHandler(ErrorStatus.SCRAP_NOT_FOUND));
+                placeScrapRepository.delete(placeScrap);
+            } else if ("book".equalsIgnoreCase(scrapItem.getType())) {
+                BookScrap bookScrap = bookScrapRepository.findById(scrapItem.getScrapId())
+                        .orElseThrow(() -> new BookHandler(ErrorStatus.SCRAP_NOT_FOUND));
+                bookScrapRepository.delete(bookScrap);
+            } else {
+                throw new BookHandler(ErrorStatus.INVALID_FOLDER_TYPE);
+            }
+        }
+    }
+
+    @Override
+    public void moveScrapFolder(Long folderId, ScrapRequestDTO.ScrapFolderMoveRequestDTO requestDTO, Member member) {
+        if (folderId.equals(requestDTO.getNewFolderId())) {
+            throw new ScrapHandler(ErrorStatus.INVALID_FOLDER_MOVE);
+        }
+
+        ScrapFolder sourceFolder = scrapFolderRepository.findByIdAndMember(folderId, member)
+                .orElseThrow(() -> new ScrapHandler(ErrorStatus.FOLDER_NOT_FOUND));
+
+        ScrapFolder destinationFolder = scrapFolderRepository.findByIdAndMember(requestDTO.getNewFolderId(), member)
+                .orElseThrow(() -> new ScrapHandler(ErrorStatus.FOLDER_NOT_FOUND));
+
+        // 타입에 따라 스크랩 분리
+        List<ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO> bookScraps =
+                filterScrapsByType(requestDTO.getScraps(), "book");
+        List<ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO> placeScraps =
+                filterScrapsByType(requestDTO.getScraps(), "place");
+
+        if ("도서".equals(destinationFolder.getName()) && !placeScraps.isEmpty()) {
+            throw new ScrapHandler(ErrorStatus.INVALID_SCRAP_TYPE_FOR_FOLDER);
+        }
+
+        if ("공간".equals(destinationFolder.getName()) && !bookScraps.isEmpty()) {
+            throw new ScrapHandler(ErrorStatus.INVALID_SCRAP_TYPE_FOR_FOLDER);
+        }
+
+        List<BookScrap> foundBookScraps = bookScrapRepository.findAllByIdInAndScrapFolder(
+                bookScraps.stream().map(ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO::getScrapId).toList(),
+                sourceFolder
+        );
+
+        List<PlaceScrap> foundPlaceScraps = placeScrapRepository.findAllByIdInAndScrapFolder(
+                placeScraps.stream().map(ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO::getScrapId).toList(),
+                sourceFolder
+        );
+
+        // 스크랩 폴더 이동
+        foundBookScraps.forEach(scrap -> scrap.changeScrapFolder(destinationFolder));
+        foundPlaceScraps.forEach(scrap -> scrap.changeScrapFolder(destinationFolder));
+
+        bookScrapRepository.saveAll(foundBookScraps);
+        placeScrapRepository.saveAll(foundPlaceScraps);
+    }
+
+    private List<ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO> filterScrapsByType(
+            List<ScrapRequestDTO.ScrapFolderMoveRequestDTO.ScrapItemDTO> scraps, String type) {
+        return scraps.stream()
+                .filter(scrap -> type.equalsIgnoreCase(scrap.getType()))
+                .toList();
     }
 
 }

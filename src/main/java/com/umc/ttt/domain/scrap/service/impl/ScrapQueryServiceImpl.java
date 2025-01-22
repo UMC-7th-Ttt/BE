@@ -33,7 +33,7 @@ public class ScrapQueryServiceImpl implements ScrapQueryService {
     private final BookScrapRepository bookScrapRepository;
 
     @Override
-    public List<ScrapResponseDTO.ScrapFolderDTO> getScrapFolders(Member member) {
+    public ScrapResponseDTO.ScrapFolderListDTO getScrapFolders(Member member) {
         List<ScrapFolder> scrapFolders = scrapFolderRepository.findAllByMember(member);
         return ScrapConverter.toScrapFolderDTOList(scrapFolders);
     }

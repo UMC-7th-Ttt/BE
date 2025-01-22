@@ -33,6 +33,16 @@ public class ScrapResponseDTO {
     public static class ScrapFolderDTO {
         private Long folderId;
         private String name;
+        private List<String> images;
+    }
+
+    @Builder
+    @Getter
+    @RequiredArgsConstructor
+    @AllArgsConstructor
+    public static class ScrapFolderListDTO {
+        private int folderCount;
+        private List<ScrapFolderDTO> folders;
     }
 
     @Builder
