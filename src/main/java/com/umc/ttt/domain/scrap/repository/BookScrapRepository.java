@@ -27,4 +27,6 @@ public interface BookScrapRepository extends JpaRepository<BookScrap, Long> {
     List<Long> findScrapedBookIdsByMemberAndBooks(@Param("member") Member member, @Param("books") List<Book> books);
 
     boolean existsByScrapFolderMemberAndBook(Member member, Book book);
+
+    List<BookScrap> findAllByIdInAndScrapFolder(List<Long> list, ScrapFolder destinationFolder);
 }

@@ -32,6 +32,8 @@ public enum ErrorStatus implements BaseErrorCode {
     FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),
     INVALID_FOLDER(HttpStatus.BAD_REQUEST, "FOLDER400", "유효하지 않은 폴더 위치입니다."),
     INVALID_FOLDER_TYPE(HttpStatus.BAD_REQUEST, "FOLDER400", "유효하지 않은 폴더 타입입니다."),
+    INVALID_FOLDER_MOVE(HttpStatus.FORBIDDEN, "FOLDER403", "동일한 폴더로 이동할 수 없습니다."),
+    INVALID_SCRAP_TYPE_FOR_FOLDER(HttpStatus.FORBIDDEN, "FOLDER403", "도서 폴더에는 도서만, 공간 폴더에는 공간만 저장 가능합니다."),
     FOLDER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "FOLDER400", "이미 존재하는 폴더입니다."),
     CANNOT_DELETE_DEFAULT_FOLDER(HttpStatus.FORBIDDEN, "FOLDER403", "기본 폴더는 삭제할 수 없습니다."),
     SCRAP_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "SCRAP400", "이미 스크랩한 도서/공간입니다."),

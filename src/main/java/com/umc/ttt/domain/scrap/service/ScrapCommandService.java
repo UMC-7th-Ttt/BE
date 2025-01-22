@@ -18,4 +18,6 @@ public interface ScrapCommandService {
     ScrapResponseDTO.BookScrapDTO removeBookScrap(Long bookId, Member member);
 
     void removeScraps(ScrapRequestDTO.ScrapRemoveRequestDTO scrapRemoveRequestDTO);
+
+    void moveScrapFolder(Long folderId, ScrapRequestDTO.ScrapFolderMoveRequestDTO scrapFolderMoveRequestDTO, Member member);
 }

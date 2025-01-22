@@ -114,4 +114,14 @@ public class ScrapRestController {
                 folderId, 0L, 0L, 10, member);
         return ApiResponse.onSuccess(updatedScrapList);
     }
+
+    @PatchMapping("/scraps/folders/{folderId}")
+    @Operation(summary = "스크랩 폴더 이동 - 마이페이지", description = "마이페이지에서 하나 이상의 스크랩 내역을 다른 폴더로 이동합니다.")
+    public ApiResponse<Void> moveScrapFolder(@PathVariable(name = "folderId") Long folderId,
+                                             @Valid @RequestBody ScrapRequestDTO.ScrapFolderMoveRequestDTO scrapFolderMoveRequestDTO) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        scrapCommandService.moveScrapFolder(folderId, scrapFolderMoveRequestDTO, member);
+        return ApiResponse.onSuccess(null);
+    }
 }
