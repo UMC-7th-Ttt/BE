@@ -47,6 +47,13 @@ public enum ErrorStatus implements BaseErrorCode {
     BOOKLETTER_BOOKLIST_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "BOOKLETTER402","북레터의 책은 최대 5권입니다."),
     DUPLICATE_BOOK(HttpStatus.BAD_REQUEST,"BOOKLETTER403", "한 북레터에서 책은 중복될 수 없습니다."),
 
+    // 북레터-책 테이블 연관 에러
+    BOOK_LETTER_BOOK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKLETTERBOOK401","존재하지 않는 북레터 북입니다."),
+    BOOK_LETTER_BOOK_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"BOOKLETTERBOOK402", "이미 진행되는 북레터 북입니다."),
+
+    // 북클럽 관련
+    BOOK_CLUB_NOT_FOUND(HttpStatus.NOT_FOUND,"BOOKCLUB401", "존재하지 않는 북클럽입니다."),
+
     // 페이지 관련
     INVALID_PAGE(HttpStatus.BAD_REQUEST, "PAGE401", "존재하지 않는 페이지입니다.");
 
