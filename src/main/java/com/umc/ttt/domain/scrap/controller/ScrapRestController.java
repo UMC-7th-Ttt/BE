@@ -7,6 +7,7 @@ import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 import com.umc.ttt.domain.scrap.service.ScrapCommandService;
 import com.umc.ttt.domain.scrap.service.ScrapQueryService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -44,6 +45,7 @@ public class ScrapRestController {
         return ApiResponse.onSuccess(scrapQueryService.getScrapList(folderId, bookCursor, placeCursor, limit, member));
     }
 
+    @Hidden
     @PostMapping("/scraps/folders")
     @Operation(summary = "스크랩 폴더 생성", description = "마이페이지에서 스크랩 폴더 생성 시 사용되는 api입니다.")
     public ApiResponse<ScrapResponseDTO.ScrapFolderDTO> createScrapFolder(@RequestParam(name = "folder") String folder) {
