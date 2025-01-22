@@ -7,10 +7,10 @@ import com.umc.ttt.domain.scrap.service.ScrapCommandService;
 import com.umc.ttt.domain.scrap.service.ScrapQueryService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class ScrapRestController {
 
     @GetMapping("/scraps/folders")
     @Operation(summary = "스크랩 폴더 목록 조회", description = "도서, 공간은 기본 폴더입니다.")
-    public ApiResponse<List<ScrapResponseDTO.ScrapFolderDTO>> getScrapFolders() {
+    public ApiResponse<ScrapResponseDTO.ScrapFolderListDTO> getScrapFolders() {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
         return ApiResponse.onSuccess(scrapQueryService.getScrapFolders(member));
@@ -59,7 +59,10 @@ public class ScrapRestController {
     }
 
     @PostMapping("places/{placeId}/scraps")
-    @Operation(summary = "공간 스크랩", description = "folder에 폴더 이름을 전달해주세요. (ex. 공간)")
+    @Operation(summary = "공간 스크랩", description = "폴더가 없는 경우 폴더 생성 후 저장됩니다.")
+    @Parameters({
+            @Parameter(name = "folder", description = "폴더 이름(ex. 공간)"),
+    })
     public ApiResponse<ScrapResponseDTO.PlaceScrapDTO> addScrap(@PathVariable(name = "placeId") Long placeId,
                                                                 @RequestParam(name = "folder") String folder) {
         // TODO: 로그인한 회원 정보로 변경
@@ -76,7 +79,10 @@ public class ScrapRestController {
     }
 
     @PostMapping("books/{bookId}/scraps")
-    @Operation(summary = "책 스크랩", description = "folder에 폴더 이름을 전달해주세요. (ex. 도서)")
+    @Operation(summary = "책 스크랩", description = "폴더가 없는 경우 폴더 생성 후 저장됩니다.")
+    @Parameters({
+            @Parameter(name = "folder", description = "폴더 이름(ex. 도서)"),
+    })
     public ApiResponse<ScrapResponseDTO.BookScrapDTO> addBookScrap(@PathVariable(name = "bookId") Long bookId,
                                                                    @RequestParam(name = "folder") String folder) {
         // TODO: 로그인한 회원 정보로 변경
