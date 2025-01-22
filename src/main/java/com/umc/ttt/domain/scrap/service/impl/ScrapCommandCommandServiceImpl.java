@@ -5,6 +5,7 @@ import com.umc.ttt.domain.book.repository.BookRepository;
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.place.entity.Place;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
+import com.umc.ttt.domain.scrap.dto.ScrapRequestDTO;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 import com.umc.ttt.domain.scrap.entity.BookScrap;
 import com.umc.ttt.domain.scrap.entity.ScrapFolder;
@@ -168,6 +169,23 @@ public class ScrapCommandCommandServiceImpl implements ScrapCommandService {
         bookScrapRepository.delete(bookScrap);
 
         return ScrapConverter.toBookScrapDTO(book, member, false);
+    }
+
+    @Override
+    public void removeScraps(ScrapRequestDTO.ScrapRemoveRequestDTO scrapRemoveRequestDTO) {
+        for (ScrapRequestDTO.ScrapRemoveRequestDTO.ScrapItemDTO scrapItem : scrapRemoveRequestDTO.getScraps()) {
+            if ("place".equalsIgnoreCase(scrapItem.getType())) {
+                PlaceScrap placeScrap = placeScrapRepository.findById(scrapItem.getScrapId())
+                        .orElseThrow(() -> new PlaceHandler(ErrorStatus.SCRAP_NOT_FOUND));
+                placeScrapRepository.delete(placeScrap);
+            } else if ("book".equalsIgnoreCase(scrapItem.getType())) {
+                BookScrap bookScrap = bookScrapRepository.findById(scrapItem.getScrapId())
+                        .orElseThrow(() -> new BookHandler(ErrorStatus.SCRAP_NOT_FOUND));
+                bookScrapRepository.delete(bookScrap);
+            } else {
+                throw new BookHandler(ErrorStatus.INVALID_FOLDER_TYPE);
+            }
+        }
     }
 
 }

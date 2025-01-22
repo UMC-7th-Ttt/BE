@@ -1,6 +1,7 @@
 package com.umc.ttt.domain.scrap.service;
 
 import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.scrap.dto.ScrapRequestDTO;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 
 public interface ScrapCommandService {
@@ -15,4 +16,6 @@ public interface ScrapCommandService {
     ScrapResponseDTO.PlaceScrapDTO removePlaceScrap(Long placeId, Member member);
 
     ScrapResponseDTO.BookScrapDTO removeBookScrap(Long bookId, Member member);
+
+    void removeScraps(ScrapRequestDTO.ScrapRemoveRequestDTO scrapRemoveRequestDTO);
 }

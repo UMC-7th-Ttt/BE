@@ -2,6 +2,7 @@ package com.umc.ttt.domain.scrap.controller;
 
 import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.domain.member.repository.MemberRepository;
+import com.umc.ttt.domain.scrap.dto.ScrapRequestDTO;
 import com.umc.ttt.domain.scrap.dto.ScrapResponseDTO;
 import com.umc.ttt.domain.scrap.service.ScrapCommandService;
 import com.umc.ttt.domain.scrap.service.ScrapQueryService;
@@ -9,6 +10,7 @@ import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,7 @@ public class ScrapRestController {
     private final ScrapQueryService scrapQueryService;
 
     @GetMapping("/scraps/folders")
-    @Operation(summary = "스크랩 폴더 목록 조회", description = "도서, 공간은 기본 폴더입니다.")
+    @Operation(summary = "스크랩 폴더 목록 조회 - 마이페이지", description = "도서, 공간은 기본 폴더입니다.")
     public ApiResponse<ScrapResponseDTO.ScrapFolderListDTO> getScrapFolders() {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
@@ -30,7 +32,7 @@ public class ScrapRestController {
     }
 
     @GetMapping("/scraps/folders/{folderId}")
-    @Operation(summary = "특정 폴더의 스크랩 내역 조회", description = "무한 스크롤 방식으로 스크랩 내역을 조회합니다.\n\n" +
+    @Operation(summary = "특정 폴더의 스크랩 내역 조회 - 마이페이지", description = "무한 스크롤 방식으로 스크랩 내역을 조회합니다.\n\n" +
             "첫 페이지 조회 시 각 cursor 값으로 0을 전달해주세요.\n\n" +
             "첫 페이지가 아닌 경우 이전 응답의 hasNext가 true일 때, nextBookCursor, nextPlaceCursor 값을 각 cursor로 전달해주세요.")
     public ApiResponse<ScrapResponseDTO.ScrapListDTO> getScrapList(@PathVariable(name = "folderId") Long folderId,
@@ -96,5 +98,20 @@ public class ScrapRestController {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
         return ApiResponse.onSuccess(scrapCommandService.removeBookScrap(bookId, member));
+    }
+
+    @DeleteMapping("/scraps/folders/{folderId}/remove")
+    @Operation(summary = "스크랩 삭제 - 마이페이지", description = "마이페이지에서 하나 이상의 스크랩 내역을 삭제하고 업데이트된 스크랩 내역을 반환합니다.\n\n" +
+            "삭제하려는 스크랩의 id와 type(PLACE 또는 BOOK)을 전달해주세요.\n\n" +
+            "스크랩 목록 조회 API 응답의 'id'와 'type'을 사용하여 삭제할 항목을 지정할 수 있습니다.")
+    public ApiResponse<ScrapResponseDTO.ScrapListDTO> removeMultipleScraps(@PathVariable(name = "folderId") Long folderId,
+                                                                           @Valid @RequestBody ScrapRequestDTO.ScrapRemoveRequestDTO scrapRemoveRequestDTO) {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        scrapCommandService.removeScraps(scrapRemoveRequestDTO);
+        // 삭제 후 최신 스크랩 목록 반환
+        ScrapResponseDTO.ScrapListDTO updatedScrapList = scrapQueryService.getScrapList(
+                folderId, 0L, 0L, 10, member);
+        return ApiResponse.onSuccess(updatedScrapList);
     }
 }
