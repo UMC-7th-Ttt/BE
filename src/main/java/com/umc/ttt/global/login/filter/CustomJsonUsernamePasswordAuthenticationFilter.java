@@ -20,7 +20,7 @@ import java.util.Map;
  * 스프링 시큐리티의 폼 기반의 UsernamePasswordAuthenticationFilter를 참고하여 만든 커스텀 필터
  * 거의 구조가 같고, Type이 Json인 Login만 처리하도록 설정한 부분만 다르다. (커스텀 API용 필터 구현)
  * Username : 회원 아이디 -> email로 설정
- * "/login" 요청 왔을 때 JSON 값을 매핑 처리하는 필터
+ * "/api/login" 요청 왔을 때 JSON 값을 매핑 처리하는 필터
  */
 public class CustomJsonUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 

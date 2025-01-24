@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberSignUpDTO {//자체 로그인 회원가입 API RequestBody / 키워드 나중에 추가할 것
+public class MemberLoginDTO {//자체 로그인 회원가입 API RequestBody / 키워드 나중에 추가할 것
     private String email;
     private String password;
-    private String nickname;
-    private String profileUrl;
 }
 
 

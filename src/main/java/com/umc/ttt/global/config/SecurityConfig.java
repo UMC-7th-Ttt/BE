@@ -42,7 +42,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final String[] swaggerUrls = {"/swagger-ui/**", "/v3/**"};
-    private final String[] permittedUrls = {"/swagger-ui/**"}; // TODO 추후 수정
+    private final String[] permittedUrls = {"/swagger-ui/**", "/**"}; // TODO 추후 수정
     private final String[] allowedUrls = Stream.concat(Arrays.stream(swaggerUrls), Arrays.stream(permittedUrls))
             .toArray(String[]::new);
 
@@ -60,7 +60,7 @@ public class SecurityConfig {
                 // URL별 권한 관리
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll() // 정적 리소스 허용
-                        .requestMatchers("/sign-up", "/login").permitAll() // 회원가입 접근 허용
+                        .requestMatchers("/api/sign-up", "/api/login").permitAll() // 회원가입 접근 허용
                         .requestMatchers(allowedUrls).permitAll() // 추가 허용된 경로
                         .anyRequest().authenticated() // 기타 요청은 인증 필요
                 )

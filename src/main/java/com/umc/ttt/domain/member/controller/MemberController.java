@@ -1,5 +1,6 @@
 package com.umc.ttt.domain.member.controller;
 
+import com.umc.ttt.domain.member.dto.MemberLoginDTO;
 import com.umc.ttt.domain.member.dto.MemberSignUpDTO;
 import com.umc.ttt.domain.member.service.MemberCommandService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
@@ -21,7 +22,6 @@ public class MemberController {
     public ApiResponse<String> signUp(@RequestBody MemberSignUpDTO memberSignUpDTO) throws Exception {
         memberCommandService.signUp(memberSignUpDTO);
         return ApiResponse.onSuccess("회원가입에 성공했습니다!");
-
     }
 
     /*요청 URI("/jwt-test")는 SecurityConfig 인증 URI 설정부분에서 설정한
@@ -32,12 +32,5 @@ AccessToken을 헤더에 담아 보내서 인증을 통과해야만 접근이 �
     @Operation(summary = "jwtTest 요청", description = "서버 테스트용 api입니다. 연동x")
     public ApiResponse<String> jwtTest() {
         return ApiResponse.onSuccess("jwtTest 요청 성공");
-    }
-
-    @PostMapping(value = "/api/logout")
-    @Operation(summary = "로그아웃", description = "")
-    public ApiResponse<String> logout(HttpServletRequest request) throws Exception {
-        memberCommandService.logout(request);
-        return ApiResponse.onSuccess("로그아웃에 성공했습니다!");
     }
 }
