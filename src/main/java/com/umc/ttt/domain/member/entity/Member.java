@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 @Builder
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,6 +38,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;  // 로그인 타입(EMAIL, GOOGLE)
 
+
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
     @Enumerated(EnumType.STRING)
@@ -61,4 +64,8 @@ public class Member extends BaseEntity {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<MemberPreferedCategory> preferedCategories;
+
 }

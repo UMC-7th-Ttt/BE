@@ -1,6 +1,6 @@
-package com.umc.ttt.domain.book.entity;
+package com.umc.ttt.domain.member.entity;
 
-import com.umc.ttt.domain.member.entity.Member;
+import com.umc.ttt.domain.book.entity.BookCategory;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,11 +10,11 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
-public class BookScrap extends BaseEntity {
+public class MemberPreferedCategory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_scrap_id", nullable = false)
+    @Column(name = "member_prefered_category_id", nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,6 +22,6 @@ public class BookScrap extends BaseEntity {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @JoinColumn(name = "book_category_id")
+    private BookCategory bookCategory;
 }

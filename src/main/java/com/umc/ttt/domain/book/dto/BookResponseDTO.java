@@ -1,59 +1,40 @@
 package com.umc.ttt.domain.book.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.umc.ttt.domain.book.entity.BookCategory;
 import lombok.*;
 
 import java.util.List;
 
-@Builder
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class BookResponseDTO {
-    private String version;
-    private String logo;
-    private String title;
-    private String link;
-    private String pubDate;
-    private int totalResults;
-    private int startIndex;
-    private int itemsPerPage;
-    private String query;
-    private int searchCategoryId;
-    private String searchCategoryName;
-    private List<Item> item;
 
     @Builder
     @Getter
-    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Item {
+    public static class SearchBookResultDTO {
+        private List<BookInfoDTO> books;
+        private Long nextCursor;
+        private int limit;
+        private boolean hasNext;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SuggestBooksResultDTO {
+        private List<BookInfoDTO> books;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookInfoDTO {
+        private Long id;
+        private String cover;
         private String title;
         private String author;
-        private String cover;
-        private String isbn;
+        private String category;
         private String publisher;
-        private String description;
-        private String bestRank;
-        private String link;
-        private int itemPage;
-        private boolean hasEbook;
-        private BookCategory category;
-
-        @JsonProperty("subInfo")
-        private void unpackSubInfo(SubInfo subInfo) {
-            this.hasEbook = subInfo != null && subInfo.getEbookList() != null && !subInfo.getEbookList().isEmpty();
-            this.itemPage = subInfo.getItemPage();
-        }
-
-        @Getter
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public static class SubInfo {
-            private int itemPage;
-            private List<?> ebookList;
-        }
     }
 }

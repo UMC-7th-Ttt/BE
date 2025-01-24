@@ -5,9 +5,15 @@ import com.umc.ttt.domain.member.entity.Member;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
@@ -24,6 +30,9 @@ public class BookLetter extends BaseEntity {
     @Column(nullable = false)
     private String subtitle;    // 부제목
 
+    @Column(nullable = false)
+    private String editor;  // 에디터
+
     @Lob
     @Column(nullable = false)
     private String content; // 내용
@@ -35,7 +44,7 @@ public class BookLetter extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private Book book;
+    @OneToMany(mappedBy = "bookLetter", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookLetterBook> books = new ArrayList<>();
+
 }
