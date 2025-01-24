@@ -1,5 +1,7 @@
 package com.umc.ttt.global.jwt.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umc.ttt.global.apiPayload.ApiResponse;
 import com.umc.ttt.global.jwt.service.JwtService;
 import com.umc.ttt.global.jwt.util.PasswordUtil;
 
@@ -37,7 +39,8 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String NO_CHECK_URL = "/api/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+
 
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
@@ -118,6 +121,34 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                         .ifPresent(email -> memberRepository.findByEmail(email)
                                 .ifPresent(this::saveAuthentication)));
 
+//        // AccessToken 추출
+//        String accessToken = jwtService.extractAccessToken(request).orElse(null);
+//
+//        if (accessToken != null && jwtService.isTokenValid(accessToken)) {
+//            // AccessToken이 유효한 경우
+//            jwtService.extractEmail(accessToken)
+//                    .ifPresent(email -> memberRepository.findByEmail(email)
+//                            .ifPresent(this::saveAuthentication));
+//        } else {
+//            // AccessToken이 없거나 유효하지 않은 경우
+//            log.warn("유효하지 않은 AccessToken");
+//            response.setContentType("application/json");
+//            response.setCharacterEncoding("UTF-8");
+//
+//            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
+//            ApiResponse apiResponse = ApiResponse.onFailure("ACCESS403","유효하지 않은 토큰입니다.",null);
+//
+//            try {
+//                ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환을 위한 ObjectMapper 생성
+//                String jsonResponse = objectMapper.writeValueAsString(apiResponse); // ApiResponse를 JSON으로 변환
+//                response.getWriter().write(jsonResponse); // 응답 바디에 JSON 작성
+//            } catch (Exception e) {
+//                log.error("응답 바디 작성 중 오류 발생", e);
+//            }
+//            return; // 필터 체인 진행 중단
+//        }
+
+        // 필터 체인 진행
         filterChain.doFilter(request, response);
     }
 
