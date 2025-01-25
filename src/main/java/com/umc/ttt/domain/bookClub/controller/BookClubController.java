@@ -42,15 +42,15 @@ public class BookClubController {
 
     @GetMapping("/")
     @Operation(summary = "북클럽 리스트 조회(관리자)",description = "북클럽 리스트를 조회하는 API입니다.")
-    public ApiResponse<BookClubResponseDTO.BookClubListDTO> getBookClubPreviewList(@CheckPage @RequestParam(name="page",defaultValue = "1")Integer page){
-        Page<BookClub> bookClubList = bookClubService.getBookClubPreViewList(page-1);
-        return ApiResponse.onSuccess(BookClubConvert.bookClubListDTO(bookClubList));
+    public ApiResponse<BookClubResponseDTO.BookClubListDTOForManager> getBookClubPreviewListForManager(@CheckPage @RequestParam(name="page",defaultValue = "1")Integer page){
+        Page<BookClub> bookClubList = bookClubService.getBookClubPreViewListForManager(page-1);
+        return ApiResponse.onSuccess(BookClubConvert.bookClubListDTOForManager(bookClubList));
     }
 
     @GetMapping("/{bookClubId}")
     @Operation(summary = "북클럽 상세 조회(관리자)",description = "특정 북클럽의 상세 정보를 조회하는 API입니다.")
-    public ApiResponse<BookClubResponseDTO.BookClubDTO> getBookClub(@PathVariable(name="bookClubId") Long bookClubId){
-        BookClub bookClub = bookClubService.getBookClub(bookClubId);
-        return ApiResponse.onSuccess(BookClubConvert.toBookClubDTO(bookClub));
+    public ApiResponse<BookClubResponseDTO.BookClubDTOForManager> getBookClubForManager(@PathVariable(name="bookClubId") Long bookClubId){
+        BookClub bookClub = bookClubService.getBookClubForManager(bookClubId);
+        return ApiResponse.onSuccess(BookClubConvert.toBookClubDTOForManager(bookClub));
     }
 }

@@ -8,6 +8,6 @@ public interface BookClubService {
     public BookClub addBookClub(BookClubRequestDTO.AddUpdateDTO request);
     public BookClub updateBookClub(Long bookClubId, BookClubRequestDTO.AddUpdateDTO request);
     public void deleteBookClub(Long bookClubId);
-    public Page<BookClub> getBookClubPreViewList(Integer page);
-    public BookClub getBookClub(Long bookClubId);
+    public Page<BookClub> getBookClubPreViewListForManager(Integer page);
+    public BookClub getBookClubForManager(Long bookClubId);
 }

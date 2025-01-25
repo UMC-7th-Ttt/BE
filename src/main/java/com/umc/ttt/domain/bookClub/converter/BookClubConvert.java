@@ -27,18 +27,18 @@ public class BookClubConvert {
     }
 
     // 북클럽 리스트 조회
-    public static BookClubResponseDTO.BookClubPreViewDTO bookClubPreViewDTO(BookClub bookClub) {
-        return BookClubResponseDTO.BookClubPreViewDTO.builder()
+    public static BookClubResponseDTO.BookClubPreViewDTOForManager bookClubPreViewDTOForManager(BookClub bookClub) {
+        return BookClubResponseDTO.BookClubPreViewDTOForManager.builder()
                 .bookClubId(bookClub.getId())
                 .title(bookClub.getBookLetterBook().getBook().getTitle())
                 .build();
     }
 
-    public static BookClubResponseDTO.BookClubListDTO bookClubListDTO(Page<BookClub> bookClubList) {
-        List<BookClubResponseDTO.BookClubPreViewDTO> bookClubPreViewDTOList = bookClubList.stream()
-                .map(BookClubConvert::bookClubPreViewDTO).collect(Collectors.toList());
+    public static BookClubResponseDTO.BookClubListDTOForManager bookClubListDTOForManager(Page<BookClub> bookClubList) {
+        List<BookClubResponseDTO.BookClubPreViewDTOForManager> bookClubPreViewDTOList = bookClubList.stream()
+                .map(BookClubConvert::bookClubPreViewDTOForManager).collect(Collectors.toList());
 
-        return BookClubResponseDTO.BookClubListDTO.builder()
+        return BookClubResponseDTO.BookClubListDTOForManager.builder()
                 .isLastPage(bookClubList.isLast())
                 .isFirstPage(bookClubList.isFirst())
                 .totalPage(bookClubList.getTotalPages())
@@ -49,8 +49,8 @@ public class BookClubConvert {
     }
 
     // 북레터 상세 보기(관리자)
-    public static BookClubResponseDTO.BookClubDTO toBookClubDTO(BookClub bookClub) {
-        return BookClubResponseDTO.BookClubDTO.builder()
+    public static BookClubResponseDTO.BookClubDTOForManager toBookClubDTOForManager(BookClub bookClub) {
+        return BookClubResponseDTO.BookClubDTOForManager.builder()
                 .bookLetterId(bookClub.getBookLetterBook().getBookLetter().getId())
                 .bookId(bookClub.getBookLetterBook().getBook().getId())
                 .title(bookClub.getBookLetterBook().getBook().getTitle())

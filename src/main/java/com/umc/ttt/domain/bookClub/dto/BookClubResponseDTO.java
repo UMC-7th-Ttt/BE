@@ -23,8 +23,8 @@ public class BookClubResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class BookClubListDTO{
-        List<BookClubPreViewDTO> bookClubPreViewList;
+    public static class BookClubListDTOForManager {
+        List<BookClubPreViewDTOForManager> bookClubPreViewList;
         Integer totalPage;
         Integer listSize;
         Long totalElements;
@@ -36,7 +36,7 @@ public class BookClubResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class BookClubPreViewDTO{
+    public static class BookClubPreViewDTOForManager {
         Long bookClubId;
         String title;
     }
@@ -46,7 +46,7 @@ public class BookClubResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class BookClubDTO{
+    public static class BookClubDTOForManager {
         Long bookLetterId;
         Long bookId;
         String title;
