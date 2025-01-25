@@ -10,6 +10,8 @@ import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import com.umc.ttt.domain.bookLetter.handler.BookLetterBookHandler;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,4 +61,12 @@ public class BookClubServiceImpl implements BookClubService{
         }
         bookClubRepository.deleteById(bookClubId);
     }
+
+    @Override
+    @Transactional
+    public Page<BookClub> getBookClubPreViewList(Integer page) {
+        Page<BookClub> bookClub = bookClubRepository.findAll(PageRequest.of(page,10));
+        return bookClub;
+    }
+
 }
