@@ -72,4 +72,13 @@ public class PlaceConverter {
                 .build();
     }
 
+    public static PlaceResponseDTO.PlaceSuggestListDTO toPlaceSuggestListDTO(List<Place> places, List<Long> scrapedPlaceIds) {
+        List<PlaceResponseDTO.PlacePreviewDTO> placePreviewDTOs = places.stream()
+                .map(place -> toPlacePreviewDTO(place, scrapedPlaceIds.contains(place.getId())))
+                .toList();
+
+        return PlaceResponseDTO.PlaceSuggestListDTO.builder()
+                .places(placePreviewDTOs)
+                .build();
+    }
 }

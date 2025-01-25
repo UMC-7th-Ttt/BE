@@ -5,6 +5,7 @@ import com.umc.ttt.domain.member.entity.enums.Role;
 import com.umc.ttt.domain.place.converter.PlaceConverter;
 import com.umc.ttt.domain.place.dto.PlaceResponseDTO;
 import com.umc.ttt.domain.place.entity.Place;
+import com.umc.ttt.domain.place.entity.enums.PlaceCategory;
 import com.umc.ttt.domain.place.repository.PlaceRepository;
 import com.umc.ttt.domain.place.service.PlaceQueryService;
 import com.umc.ttt.domain.scrap.repository.PlaceScrapRepository;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +96,32 @@ public class PlaceQueryServiceImpl implements PlaceQueryService {
         Long nextCursor = hasNext ? paginatedPlaces.get(paginatedPlaces.size() - 1).getId() : null;
 
         return PlaceConverter.toPlaceListDTO(paginatedPlaces, nextCursor, limit, hasNext, scrapedPlaceIds);
+    }
+
+    @Override
+    public PlaceResponseDTO.PlaceSuggestListDTO suggestPlaces(Member member) {
+        // TODO: 멤버가 선호하는 공간 카테고리 가져오기
+        PlaceCategory category = PlaceCategory.CAFE;
+
+        List<Place> places;
+
+        if (category != null) {
+            places = placeRepository.findPlacesByCategory(category);
+        } else {
+            places = placeRepository.findAll();
+        }
+
+        List<Place> randomPlaces = places.stream()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        collected -> {
+                            Collections.shuffle(collected);
+                            return collected.stream().limit(10).toList();
+                        }
+                ));
+        List<Long> scrapedPlaceIds = placeScrapRepository.findScrapedPlaceIdsByMemberAndPlaces(member, randomPlaces);
+
+        return PlaceConverter.toPlaceSuggestListDTO(randomPlaces, scrapedPlaceIds);
     }
 
 }

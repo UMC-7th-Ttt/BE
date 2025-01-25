@@ -1,6 +1,7 @@
 package com.umc.ttt.domain.place.repository;
 
 import com.umc.ttt.domain.place.entity.Place;
+import com.umc.ttt.domain.place.entity.enums.PlaceCategory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -72,4 +73,6 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
         ORDER BY p.id ASC
     """)
     List<Place> findPlacesByKeyword(@Param("keyword") String keyword, @Param("cursor") long cursor, Pageable pageable);
+
+    List<Place> findPlacesByCategory(PlaceCategory placeCategory);
 }

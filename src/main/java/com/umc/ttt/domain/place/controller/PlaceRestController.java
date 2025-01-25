@@ -87,4 +87,11 @@ public class PlaceRestController {
         return ApiResponse.onSuccess(placeQueryService.searchPlaceList(keyword, cursor, limit, member));
     }
 
+    @GetMapping("/suggestions")
+    @Operation(summary = "공간 추천", description = "사용자가 선호하는 공간 카테고리를 기반으로 공간을 추천합니다. 추천 결과로 10개의 공간을 반환합니다.")
+    public ApiResponse<PlaceResponseDTO.PlaceSuggestListDTO> suggestPlaces() {
+        // TODO: 로그인한 회원 정보로 변경
+        Member member = memberRepository.findById(1L).get();
+        return ApiResponse.onSuccess(placeQueryService.suggestPlaces(member));
+    }
 }
