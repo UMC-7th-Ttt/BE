@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class BookClubResponseDTO {
@@ -41,7 +42,18 @@ public class BookClubResponseDTO {
     }
 
     // 북클럽 상세 페이지(관리자)
-
-
-
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BookClubDTO{
+        Long bookLetterId;
+        Long bookId;
+        String title;
+        Boolean isWriter;
+        LocalDate startDate;
+        LocalDate endDate;
+        String comment;
+        Integer recuitNumber;
+    }
 }

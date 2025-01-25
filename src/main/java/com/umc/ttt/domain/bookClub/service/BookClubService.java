@@ -9,4 +9,5 @@ public interface BookClubService {
     public BookClub updateBookClub(Long bookClubId, BookClubRequestDTO.AddUpdateDTO request);
     public void deleteBookClub(Long bookClubId);
     public Page<BookClub> getBookClubPreViewList(Integer page);
+    public BookClub getBookClub(Long bookClubId);
 }

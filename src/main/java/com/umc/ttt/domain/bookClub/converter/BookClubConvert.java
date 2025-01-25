@@ -47,4 +47,18 @@ public class BookClubConvert {
                 .bookClubPreViewList(bookClubPreViewDTOList)
                 .build();
     }
+
+    // 북레터 상세 보기(관리자)
+    public static BookClubResponseDTO.BookClubDTO toBookClubDTO(BookClub bookClub) {
+        return BookClubResponseDTO.BookClubDTO.builder()
+                .bookLetterId(bookClub.getBookLetterBook().getBookLetter().getId())
+                .bookId(bookClub.getBookLetterBook().getBook().getId())
+                .title(bookClub.getBookLetterBook().getBook().getTitle())
+                .isWriter(true) // 추후 writer인지 확인
+                .startDate(bookClub.getStartDate())
+                .endDate(bookClub.getEndDate())
+                .comment(bookClub.getComment())
+                .recuitNumber(bookClub.getRecruitNumber())
+                .build();
+    }
 }

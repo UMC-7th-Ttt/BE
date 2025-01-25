@@ -62,6 +62,7 @@ public class BookClubServiceImpl implements BookClubService{
         bookClubRepository.deleteById(bookClubId);
     }
 
+    // 북클럽 리스트
     @Override
     @Transactional
     public Page<BookClub> getBookClubPreViewList(Integer page) {
@@ -69,4 +70,10 @@ public class BookClubServiceImpl implements BookClubService{
         return bookClub;
     }
 
+    // 특정 북클럽 상세 정보 보기
+    @Override
+    public BookClub getBookClub(Long bookClubId) {
+        BookClub bookClub = bookClubRepository.findById(bookClubId).orElseThrow(() -> new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND));
+        return bookClub;
+    }
 }

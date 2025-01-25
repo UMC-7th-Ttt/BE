@@ -47,4 +47,10 @@ public class BookClubController {
         return ApiResponse.onSuccess(BookClubConvert.bookClubListDTO(bookClubList));
     }
 
+    @GetMapping("/{bookClubId}")
+    @Operation(summary = "북클럽 상세 조회",description = "특정 북클럽 리스트를 조회하는 API입니다.")
+    public ApiResponse<BookClubResponseDTO.BookClubDTO> getBookClub(@PathVariable(name="bookClubId") Long bookClubId){
+        BookClub bookClub = bookClubService.getBookClub(bookClubId);
+        return ApiResponse.onSuccess(BookClubConvert.toBookClubDTO(bookClub));
+    }
 }
