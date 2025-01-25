@@ -44,7 +44,7 @@ public class BookClubController {
     }
 
     @GetMapping("/{bookClubId}/details")
-    @Operation(summary = "북클럽 상세 페이지 조회",description = "북클럽 상세 페이지를 조회하는 API입니다. 책 정보, 사용자 및 권장 완독률, 멤버 리스트를 제공합니다.")
+    @Operation(summary = "책마다 북클럽 상세 페이지 조회",description = "책마다 북클럽 상세 페이지를 조회하는 API입니다. 책 정보, 사용자 및 권장 완독률, 멤버 리스트를 제공합니다.")
     public ApiResponse<BookClubResponseDTO.getBookClubDetailsResultDTO> getBookClubDetails(@PathVariable(name="bookClubId") Long bookClubId) {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();
