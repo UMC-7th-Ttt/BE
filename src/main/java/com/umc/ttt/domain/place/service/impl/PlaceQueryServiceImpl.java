@@ -11,13 +11,17 @@ import com.umc.ttt.domain.scrap.repository.PlaceScrapRepository;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.handler.PlaceHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PlaceQueryServiceImpl implements PlaceQueryService {
 
     private final PlaceRepository placeRepository;
@@ -75,6 +79,20 @@ public class PlaceQueryServiceImpl implements PlaceQueryService {
         }
 
         return PlaceConverter.toPlaceListDTO(places, nextCursor, limit, hasNext, scrapedPlaceIds);
+    }
+
+    @Override
+    public PlaceResponseDTO.PlaceListDTO searchPlaceList(String keyword, Long cursor, int limit, Member member) {
+        Pageable pageable = PageRequest.of(0, limit + 1);
+        List<Place> places = placeRepository.findPlacesByKeyword(keyword, cursor, pageable);
+
+        boolean hasNext = places.size() > limit;
+
+        List<Place> paginatedPlaces = hasNext ? places.subList(0, limit) : places;
+        List<Long> scrapedPlaceIds = placeScrapRepository.findScrapedPlaceIdsByMemberAndPlaces(member, paginatedPlaces);
+        Long nextCursor = hasNext ? paginatedPlaces.get(paginatedPlaces.size() - 1).getId() : null;
+
+        return PlaceConverter.toPlaceListDTO(paginatedPlaces, nextCursor, limit, hasNext, scrapedPlaceIds);
     }
 
 }
