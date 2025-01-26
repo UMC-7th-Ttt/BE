@@ -27,11 +27,11 @@ public class PlaceConverter {
                 .weekdaysBusiness(place.getWeekdaysBusiness())
                 .sunBusiness(place.getSunBusiness())
                 .phone(place.getPhone())
-                .hasParking(place.isHasParking())
-                .hasCafe(place.isHasCafe())
-                .hasIndiePub(place.isHasIndiePub())
-                .hasBookClub(place.isHasBookClub())
-                .hasSpaceRental(place.isHasSpaceRental())
+                .hasParking(place.getHasParking())
+                .hasCafe(place.getHasCafe())
+                .hasIndiePub(place.getHasIndiePub())
+                .hasBookClub(place.getHasBookClub())
+                .hasSpaceRental(place.getHasSpaceRental())
                 .image(place.getImage())
                 .userRating(getUserRating(place, member))   // 같은 취향 유저들의 평점
                 .totalRating(place.getRating()) // 전체 평점
