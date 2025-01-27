@@ -21,7 +21,7 @@ public class BookConverter {
                 .bestRank(item.getBestRank())
                 .link(item.getLink())
                 .itemPage(item.getItemPage())
-                .hasEbook(item.isHasEbook())
+                .hasEbook(item.getHasEbook())
                 .bookCategory(bookCategory)
                 .build();
     }

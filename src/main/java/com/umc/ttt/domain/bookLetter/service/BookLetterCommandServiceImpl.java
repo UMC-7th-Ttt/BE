@@ -85,6 +85,7 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
 
     // 북레터 삭제
     @Override
+    @Transactional
     public void deleteBookLetter(Long bookLetterId) {
         if(!bookLetterRepository.existsById(bookLetterId)){
             throw new BookLetterHandler(ErrorStatus.BOOKLETTER_NOT_FOUND);
@@ -94,7 +95,7 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
 
     // 북레터 리스트
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<BookLetter> getBookLetterPreViewList(Integer page){
         Page<BookLetter> bookLetterPreviewPage = bookLetterRepository.findAll(PageRequest.of(page,10));
         return bookLetterPreviewPage;
@@ -102,7 +103,7 @@ public class BookLetterCommandServiceImpl implements BookLetterCommandService {
 
     // 특정 북레터 상세 정보 보기
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public BookLetter getBookLetter(Long bookLetterId) {
        BookLetter bookLetter = bookLetterRepository.findById(bookLetterId).orElseThrow(()->new BookLetterHandler(ErrorStatus.BOOKLETTER_NOT_FOUND));
         return bookLetter;
