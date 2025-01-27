@@ -63,4 +63,5 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
             "+ sin(radians(:latitude)) * sin(radians(s2.x_pos)))) AS distance FROM place s2 WHERE s2.place_id = :cursor) ORDER BY places.distance ASC LIMIT :limit", nativeQuery = true)
     List<Place> findOrderByDistanceWithCursor(@Param("latitude") double latitude, @Param("longitude") double longitude, @Param("cursor") Long cursor, @Param("limit") int limit);
 
+    List<Place> findAllByIdGreaterThanEqual(long l);
 }

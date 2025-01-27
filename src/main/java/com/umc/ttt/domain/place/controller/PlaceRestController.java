@@ -6,6 +6,7 @@ import com.umc.ttt.domain.place.dto.PlaceRequestDTO;
 import com.umc.ttt.domain.place.dto.PlaceResponseDTO;
 import com.umc.ttt.domain.place.service.PlaceApiService;
 import com.umc.ttt.domain.place.service.PlaceCommandService;
+import com.umc.ttt.domain.place.service.PlaceImageCrawlingService;
 import com.umc.ttt.domain.place.service.PlaceQueryService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +25,7 @@ public class PlaceRestController {
     private final PlaceCommandService placeCommandService;
     private final PlaceQueryService placeQueryService;
     private final MemberRepository memberRepository;
+    private final PlaceImageCrawlingService placeImageCrawlingService;
 
     @PostMapping
     @Operation(summary = "독립서점, 북카페 Open API 데이터 저장", description = "서버 테스트용 api입니다. 연동x")
@@ -33,9 +35,17 @@ public class PlaceRestController {
     }
 
     @PatchMapping("/images")
-    @Operation(summary = "공간 이미지 데이터 저장 - Naver API", description = "서버 테스트용 api입니다. 연동x")
+    @Operation(summary = "공간 이미지 데이터 저장 - Naver 검색 API", description = "서버 테스트용 api입니다. 연동x")
     public ApiResponse<String> updateImagesForAllPlaces() {
         placeApiService.updateImagesForAllPlaces();
+        return ApiResponse.onSuccess("모든 장소의 이미지가 업데이트되었습니다.");
+    }
+
+    @PatchMapping("/images/crawling")
+    @Operation(summary = "공간 이미지 데이터 저장 - Naver 지도 크롤링", description = "서버 테스트용 api입니다. 연동x\n\n" +
+            "크롬 버전에 따라 동작하지 않을 수 있습니다. 로컬 DB에서는 호출하지 말고 naver 검색 api 사용해주세요. 10분에 8-90개 저장됨(데이터 약 1200개)")
+    public ApiResponse<String> updateImagesByCrawlingForAllPlaces() {
+        placeImageCrawlingService.crawlAndSaveImages();
         return ApiResponse.onSuccess("모든 장소의 이미지가 업데이트되었습니다.");
     }
 
