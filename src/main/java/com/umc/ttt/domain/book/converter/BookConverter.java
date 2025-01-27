@@ -49,7 +49,7 @@ public class BookConverter {
                 .build();
     }
 
-    private static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book) {
+    public static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book) {
         return BookResponseDTO.BookInfoDTO.builder()
                 .id(book.getId())
                 .cover(book.getCover())

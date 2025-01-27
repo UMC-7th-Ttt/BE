@@ -1,6 +1,6 @@
 package com.umc.ttt.domain.bookClub.service;
 
-import com.umc.ttt.domain.bookClub.converter.BookClubConvert;
+import com.umc.ttt.domain.bookClub.converter.BookClubConverter;
 import com.umc.ttt.domain.bookClub.dto.BookClubRequestDTO;
 import com.umc.ttt.domain.bookClub.entity.BookClub;
 import com.umc.ttt.domain.bookClub.handler.BookClubHandler;
@@ -30,7 +30,7 @@ public class BookClubServiceImpl implements BookClubService{
         if(existBookClub) {
             throw new BookLetterBookHandler(ErrorStatus.BOOK_LETTER_BOOK_ALREADY_EXIST);
         }
-        BookClub bookClub = BookClubConvert.toBookClub(request, bookLetterBook);
+        BookClub bookClub = BookClubConverter.toBookClub(request, bookLetterBook);
 
         return bookClubRepository.save(bookClub);
     }

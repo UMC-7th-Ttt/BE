@@ -1,15 +1,17 @@
 package com.umc.ttt.domain.bookClub.converter;
 
+import com.umc.ttt.domain.book.dto.BookResponseDTO;
 import com.umc.ttt.domain.bookClub.dto.BookClubRequestDTO;
 import com.umc.ttt.domain.bookClub.dto.BookClubResponseDTO;
 import com.umc.ttt.domain.bookClub.entity.BookClub;
 import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
+import com.umc.ttt.domain.member.dto.MemberResponseDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookClubConvert {
+public class BookClubConverter {
     public static BookClubResponseDTO.AddUpdateResultDTO addUpdateResultDTO(BookClub bookClub) {
         return BookClubResponseDTO.AddUpdateResultDTO.builder()
                 .bookClubId(bookClub.getId())
@@ -36,7 +38,7 @@ public class BookClubConvert {
 
     public static BookClubResponseDTO.BookClubListDTOForManager bookClubListDTOForManager(Page<BookClub> bookClubList) {
         List<BookClubResponseDTO.BookClubPreViewDTOForManager> bookClubPreViewDTOList = bookClubList.stream()
-                .map(BookClubConvert::bookClubPreViewDTOForManager).collect(Collectors.toList());
+                .map(BookClubConverter::bookClubPreViewDTOForManager).collect(Collectors.toList());
 
         return BookClubResponseDTO.BookClubListDTOForManager.builder()
                 .isLastPage(bookClubList.isLast())
@@ -59,6 +61,19 @@ public class BookClubConvert {
                 .endDate(bookClub.getEndDate())
                 .comment(bookClub.getComment())
                 .recuitNumber(bookClub.getRecruitNumber())
+                .build();
+    }
+
+    public static BookClubResponseDTO.getBookClubDetailsResultDTO toGetBookClubDetailsResultDTO(
+            BookClub bookClub, BookResponseDTO.BookInfoDTO bookInfoDTO, List<MemberResponseDTO.MemberInfoDTO> memberInfoDTOList, int elapsedWeeks, int myCompletionRate, int recommendedCompletionRate) {
+
+        return BookClubResponseDTO.getBookClubDetailsResultDTO.builder()
+                .bookClubId(bookClub.getId())
+                .elapsedWeeks(elapsedWeeks)
+                .myCompletionRate(myCompletionRate)
+                .recommendedCompletionRate(recommendedCompletionRate)
+                .bookInfo(bookInfoDTO)
+                .members(memberInfoDTOList)
                 .build();
     }
 }
