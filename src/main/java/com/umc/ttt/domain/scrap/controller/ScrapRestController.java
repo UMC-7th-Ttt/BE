@@ -45,9 +45,8 @@ public class ScrapRestController {
         return ApiResponse.onSuccess(scrapQueryService.getScrapList(folderId, bookCursor, placeCursor, limit, member));
     }
 
-    @Hidden
     @PostMapping("/scraps/folders")
-    @Operation(summary = "스크랩 폴더 생성", description = "마이페이지에서 스크랩 폴더 생성 시 사용되는 api입니다.")
+    @Operation(summary = "스크랩 폴더 생성 - 마이페이지", description = "마이페이지에서 스크랩 폴더 생성 시 사용되는 api입니다.")
     public ApiResponse<ScrapResponseDTO.ScrapFolderDTO> createScrapFolder(@RequestParam(name = "folder") String folder) {
         // TODO: 로그인한 회원 정보로 변경
         Member member = memberRepository.findById(1L).get();

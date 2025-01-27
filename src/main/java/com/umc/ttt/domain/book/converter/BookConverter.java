@@ -21,7 +21,7 @@ public class BookConverter {
                 .bestRank(item.getBestRank())
                 .link(item.getLink())
                 .itemPage(item.getItemPage())
-                .hasEbook(item.isHasEbook())
+                .hasEbook(item.getHasEbook())
                 .bookCategory(bookCategory)
                 .build();
     }
@@ -49,7 +49,7 @@ public class BookConverter {
                 .build();
     }
 
-    private static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book) {
+    public static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book) {
         return BookResponseDTO.BookInfoDTO.builder()
                 .id(book.getId())
                 .cover(book.getCover())

@@ -63,4 +63,10 @@ public class PlaceResponseDTO {
         private boolean hasNext;
     }
 
+    @Builder
+    @Getter
+    public static class PlaceSuggestListDTO {
+        private List<PlacePreviewDTO> places;
+    }
+
 }
