@@ -2,6 +2,8 @@ package com.umc.ttt.global.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc.ttt.global.apiPayload.ApiResponse;
+import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
+import com.umc.ttt.global.apiPayload.exception.handler.JwtHandler;
 import com.umc.ttt.global.jwt.service.JwtService;
 import com.umc.ttt.global.jwt.util.PasswordUtil;
 
@@ -13,12 +15,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
@@ -37,6 +42,7 @@ import java.io.IOException;
  */
 @RequiredArgsConstructor
 @Slf4j
+//@EnableWebSecurity(debug = true)
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private static final String NO_CHECK_URL = "/api/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
@@ -113,44 +119,25 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * 그 후 다음 인증 필터로 진행
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                  FilterChain filterChain) throws ServletException, IOException {
+                                                  FilterChain filterChain) throws ServletException, IOException, JwtHandler {
         log.info("checkAccessTokenAndAuthentication() 호출");
+
+        // Access Token 추출
         jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
+                .map(accessToken -> {
+                    if (!jwtService.isTokenValid(accessToken)) {
+                        throw new JwtHandler(ErrorStatus.INVALID_TOKEN);
+                    }
+                    return accessToken; // 유효한 토큰만 다음 단계로 전달
+                })
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> memberRepository.findByEmail(email)
                                 .ifPresent(this::saveAuthentication)));
 
-//        // AccessToken 추출
-//        String accessToken = jwtService.extractAccessToken(request).orElse(null);
-//
-//        if (accessToken != null && jwtService.isTokenValid(accessToken)) {
-//            // AccessToken이 유효한 경우
-//            jwtService.extractEmail(accessToken)
-//                    .ifPresent(email -> memberRepository.findByEmail(email)
-//                            .ifPresent(this::saveAuthentication));
-//        } else {
-//            // AccessToken이 없거나 유효하지 않은 경우
-//            log.warn("유효하지 않은 AccessToken");
-//            response.setContentType("application/json");
-//            response.setCharacterEncoding("UTF-8");
-//
-//            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 Forbidden
-//            ApiResponse apiResponse = ApiResponse.onFailure("ACCESS403","유효하지 않은 토큰입니다.",null);
-//
-//            try {
-//                ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환을 위한 ObjectMapper 생성
-//                String jsonResponse = objectMapper.writeValueAsString(apiResponse); // ApiResponse를 JSON으로 변환
-//                response.getWriter().write(jsonResponse); // 응답 바디에 JSON 작성
-//            } catch (Exception e) {
-//                log.error("응답 바디 작성 중 오류 발생", e);
-//            }
-//            return; // 필터 체인 진행 중단
-//        }
-
         // 필터 체인 진행
         filterChain.doFilter(request, response);
     }
+
 
     /**
      * [인증 허가 메소드]
