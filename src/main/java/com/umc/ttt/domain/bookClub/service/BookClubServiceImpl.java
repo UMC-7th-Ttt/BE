@@ -10,6 +10,8 @@ import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import com.umc.ttt.domain.bookLetter.handler.BookLetterBookHandler;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,10 +55,27 @@ public class BookClubServiceImpl implements BookClubService{
     }
 
     @Override
+    @Transactional
     public void deleteBookClub(Long bookClubId) {
         if(!bookClubRepository.existsById(bookClubId)) {
             throw new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND);
         }
         bookClubRepository.deleteById(bookClubId);
+    }
+
+    // 북클럽 리스트
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BookClub> getBookClubPreViewListForManager(Integer page) {
+        Page<BookClub> bookClub = bookClubRepository.findAll(PageRequest.of(page,10));
+        return bookClub;
+    }
+
+    // 특정 북클럽 상세 정보 보기
+    @Override
+    @Transactional(readOnly = true)
+    public BookClub getBookClubForManager(Long bookClubId) {
+        BookClub bookClub = bookClubRepository.findById(bookClubId).orElseThrow(() -> new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND));
+        return bookClub;
     }
 }
