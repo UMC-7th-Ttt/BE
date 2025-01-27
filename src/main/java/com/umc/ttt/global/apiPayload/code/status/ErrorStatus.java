@@ -27,6 +27,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 회원
     PERMISSION_DENIED(HttpStatus.FORBIDDEN, "MEMBER403", "권한이 없습니다."),
+    MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER401", "사용자가 존재하지 않습니다."),
 
     // 스크랩
     FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),

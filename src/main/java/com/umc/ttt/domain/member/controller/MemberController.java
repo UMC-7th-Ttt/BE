@@ -6,6 +6,8 @@ import com.umc.ttt.domain.member.service.MemberCommandService;
 import com.umc.ttt.global.apiPayload.ApiResponse;
 import com.umc.ttt.global.jwt.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,4 +35,17 @@ AccessToken을 헤더에 담아 보내서 인증을 통과해야만 접근이 �
     public ApiResponse<String> jwtTest() {
         return ApiResponse.onSuccess("jwtTest 요청 성공");
     }
+
+    @DeleteMapping("/api/sign-out")
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 시 사용하는 API")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "MEMBER401", description = "사용자가 없습니다", content = @Content(mediaType = "application/json")),
+    })
+    public ApiResponse<String> signOut(@RequestHeader("Authorization") String token) throws Exception {
+        String jwtToken = token.substring(7);
+        var userEmail = jwtService.extractEmail(jwtToken);
+        memberCommandService.signOut(userEmail);
+        return ApiResponse.onSuccess("회원 탈퇴에 성공했습니다!");
+    }
+
 }
