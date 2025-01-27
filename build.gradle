@@ -45,6 +45,16 @@ dependencies {
 
 	// Json
 	implementation 'org.json:json:20231013'
+
+	// selenium
+	// https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp
+	implementation group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.5.8'
+
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.27.0'
+
+	// https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
+	implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
 }
 
 tasks.named('test') {

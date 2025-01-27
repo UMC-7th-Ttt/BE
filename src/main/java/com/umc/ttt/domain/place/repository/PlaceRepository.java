@@ -75,4 +75,5 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     List<Place> findPlacesByKeyword(@Param("keyword") String keyword, @Param("cursor") long cursor, Pageable pageable);
 
     List<Place> findPlacesByCategory(PlaceCategory placeCategory);
+    List<Place> findAllByIdGreaterThanEqual(long l);
 }
