@@ -2,6 +2,7 @@ package com.umc.ttt.domain.book.repository;
 
 import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.book.entity.BookCategory;
+import com.umc.ttt.domain.bookClub.entity.BookClub;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,11 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByIsbn(String isbn);
+
+    @Query("SELECT b FROM Book b " +
+            "JOIN BookLetterBook blb ON b.id = blb.book.id " +
+            "WHERE blb.bookClub = :bookClub")
+    Optional<Book> findBookByBookClub(BookClub bookClub);
 
     @Query("""
         SELECT b FROM Book b 
