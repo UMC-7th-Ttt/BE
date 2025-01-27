@@ -46,6 +46,16 @@ dependencies {
 	// Json
 	implementation 'org.json:json:20231013'
 
+
+	//jwt
+	implementation 'com.auth0:java-jwt:4.2.1'
+
+	//oauth2Service
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//thymeleaf
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+
 	// selenium
 	// https://mvnrepository.com/artifact/edu.stanford.nlp/stanford-corenlp
 	implementation group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '4.5.8'
@@ -55,6 +65,7 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
 	implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
+
 }
 
 tasks.named('test') {
