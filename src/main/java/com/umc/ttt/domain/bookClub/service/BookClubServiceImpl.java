@@ -55,6 +55,7 @@ public class BookClubServiceImpl implements BookClubService{
     }
 
     @Override
+    @Transactional
     public void deleteBookClub(Long bookClubId) {
         if(!bookClubRepository.existsById(bookClubId)) {
             throw new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND);
@@ -64,7 +65,7 @@ public class BookClubServiceImpl implements BookClubService{
 
     // 북클럽 리스트
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<BookClub> getBookClubPreViewListForManager(Integer page) {
         Page<BookClub> bookClub = bookClubRepository.findAll(PageRequest.of(page,10));
         return bookClub;
@@ -72,6 +73,7 @@ public class BookClubServiceImpl implements BookClubService{
 
     // 특정 북클럽 상세 정보 보기
     @Override
+    @Transactional(readOnly = true)
     public BookClub getBookClubForManager(Long bookClubId) {
         BookClub bookClub = bookClubRepository.findById(bookClubId).orElseThrow(() -> new BookClubHandler(ErrorStatus.BOOK_CLUB_NOT_FOUND));
         return bookClub;
