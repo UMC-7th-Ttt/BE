@@ -31,6 +31,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //jwt
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN401", "유효하지 않은 token입니다.."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "LOGIN401", "refreshtoken이 만료되었습니다. 로그인해주세요."),
 
     // 스크랩
     FOLDER_NOT_FOUND(HttpStatus.NOT_FOUND, "FOLDER404", "스크랩 폴더가 존재하지 않습니다."),

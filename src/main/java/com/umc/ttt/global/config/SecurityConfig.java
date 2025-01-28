@@ -45,8 +45,8 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final String[] swaggerUrls = {"/swagger-ui/**", "/v3/**"};
-//    private final String[] permittedUrls = {"/**"}; // TODO 추후 수정
-    private final String[] permittedUrls = {"/api/sign-up","/api/login"}; // TODO 추후 수정
+//    private final String[] permittedUrls = {"/**"}; // TODO 인증 모두 해제
+    private final String[] permittedUrls = {"/api/sign-up","/api/login","/token/**"}; // TODO 추가필요
 
     private final String[] allowedUrls = Stream.concat(Arrays.stream(swaggerUrls), Arrays.stream(permittedUrls))
             .toArray(String[]::new);
@@ -67,7 +67,6 @@ public class SecurityConfig {
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll() // 정적 리소스 허용
                         .requestMatchers("/api/sign-up", "/api/login").permitAll() // 회원가입 접근 허용
                         .requestMatchers(allowedUrls).permitAll() // 추가 허용된 경로
-                        .requestMatchers("/api/admin").hasAnyAuthority(Role.ADMIN.getKey())
                         .anyRequest().authenticated() // 기타 요청은 인증 필요
                 )
 

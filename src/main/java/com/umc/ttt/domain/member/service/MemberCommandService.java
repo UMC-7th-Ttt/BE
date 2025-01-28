@@ -10,5 +10,5 @@ public interface MemberCommandService {
 
     void signOut(Optional<String> userEmail) throws Exception;
 
-    void logout(HttpServletRequest request) throws Exception;
+    String refreshAccessToken(String accessToken) throws Exception;
 }

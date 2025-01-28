@@ -7,8 +7,10 @@ import com.umc.ttt.domain.member.entity.enums.Role;
 import com.umc.ttt.domain.member.repository.MemberRepository;
 import com.umc.ttt.global.apiPayload.code.status.ErrorStatus;
 import com.umc.ttt.global.apiPayload.exception.GeneralException;
+import com.umc.ttt.global.apiPayload.exception.handler.JwtHandler;
+import com.umc.ttt.global.jwt.entity.RefreshToken;
+import com.umc.ttt.global.jwt.repository.RefreshTokenRepository;
 import com.umc.ttt.global.jwt.service.JwtService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +27,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenRepository tokenRepository;
 
     @Override
     public void signUp(MemberSignUpDTO memberSignUpDto) throws Exception {
@@ -69,20 +72,29 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         }
     }
 
-
     @Override
-    public void logout(HttpServletRequest request) throws Exception {
-        jwtService.extractAccessToken(request) // 요청에서 Access Token 추출
-                .filter(jwtService::isTokenValid) // 유효한 토큰인지 확인
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken) // 이메일 추출
-                        .ifPresent(email -> memberRepository.findByEmail(email) // 이메일로 사용자 조회
-                                .ifPresent(member -> {
-                                    // member의 refreshToken 필드 비우기
-                                    member.updateRefreshToken(null);
+    public String refreshAccessToken(String accessToken) throws JwtHandler {
+        // 액세스 토큰으로 Refresh 토큰 객체를 조회
+        Optional<RefreshToken> refreshTokenOpt = tokenRepository.findByAccessToken(accessToken);
 
-                                    // 변경사항 저장
-                                    memberRepository.save(member);
-                                })));
+        if (refreshTokenOpt.isEmpty()) {
+            throw new JwtHandler(ErrorStatus.INVALID_TOKEN);
+        }
 
+        RefreshToken refreshToken = refreshTokenOpt.get();
+
+        // RefreshToken 검증
+        if (!jwtService.isTokenValid(refreshToken.getRefreshToken())) {
+            throw new JwtHandler(ErrorStatus.INVALID_REFRESH_TOKEN);
+        }
+
+        // 새 AccessToken 생성
+        String newAccessToken = jwtService.generateAccessToken(refreshToken.getId());
+
+        // AccessToken 업데이트
+        refreshToken.updateAccessToken(newAccessToken);
+        tokenRepository.save(refreshToken);
+
+        return newAccessToken;
     }
 }

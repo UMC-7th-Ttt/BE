@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.umc.ttt.domain.member.entity.enums.Role;
 import com.umc.ttt.domain.member.repository.MemberRepository;
 import com.umc.ttt.global.apiPayload.ApiResponse;
+import com.umc.ttt.global.jwt.entity.GeneratedToken;
 import com.umc.ttt.global.jwt.service.JwtService;
 import com.umc.ttt.global.oauth2.CustomOAuth2User;
 import jakarta.servlet.ServletException;
@@ -56,11 +57,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String email = oAuth2User.getEmail();
-        String accessToken = jwtService.createAccessToken(email);
-        String refreshToken = jwtService.createRefreshToken(); // JwtService의 createRefreshToken을 사용하여 RefreshToken 발급
+
+        GeneratedToken generatedToken = jwtService.generateToken(email);
+
+        String accessToken = generatedToken.getAccessToken();
+        String refreshToken = generatedToken.getRefreshToken();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(email, refreshToken);
+//        jwtService.updateRefreshToken(email, refreshToken);
 
         log.info("구글로그인에 성공하였습니다. 이메일 : {}", email);
         log.info("구글로그인에 성공하였습니다. AccessToken : {}", accessToken);

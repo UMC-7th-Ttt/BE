@@ -3,6 +3,7 @@ package com.umc.ttt.global.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.umc.ttt.domain.member.repository.MemberRepository;
+import com.umc.ttt.global.jwt.entity.GeneratedToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -46,11 +47,30 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final MemberRepository memberRepository;
+    private final RefreshTokenService tokenService;
 
-    /**
-     * AccessToken 생성 메소드
-     */
-    public String createAccessToken(String email) {
+
+    public GeneratedToken generateToken(String email) {
+        // refreshToken과 accessToken을 생성한다.
+        String refreshToken = generateRefreshToken(email);
+        String accessToken = generateAccessToken(email);
+
+        // 토큰을 Redis에 저장한다.
+        tokenService.saveTokenInfo(email, refreshToken, accessToken);
+        return new GeneratedToken(accessToken, refreshToken);
+    }
+
+    public String generateRefreshToken(String email) {
+        Date now = new Date();
+        return JWT.create()
+                .withSubject(REFRESH_TOKEN_SUBJECT)
+                .withClaim(EMAIL_CLAIM, email)
+                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .sign(Algorithm.HMAC512(secretKey));
+    }
+
+
+    public String generateAccessToken(String email) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
@@ -60,20 +80,29 @@ public class JwtService {
                 //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
                 //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정 .사용자 정의 클레임
                 .withClaim(EMAIL_CLAIM, email)
-                .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
+                .sign(Algorithm.HMAC512(secretKey));
+
     }
 
+
     /**
-     * RefreshToken 생성
-     * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
-     */
-    public String createRefreshToken() {
-        Date now = new Date();
-        return JWT.create()
-                .withSubject(REFRESH_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
-                .sign(Algorithm.HMAC512(secretKey));
+     * 토큰이 유효하지 않다는 예외는 JWT 토큰을 검증하는 JwtAuthFilter에서 발생시키도록 할 것이기 때문에 boolean 값으로 토큰이 유효한지 여부를 반환하도록 했습니다.
+     **/
+    public boolean verifyToken(String token) {
+        try {
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+            return true;
+        } catch (Exception e) {
+            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
+            return false;
+        }
     }
+
+
+//    // 토큰에서 Email을 추출한다.
+//    public String getUid(String token) {
+//        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+//    }
 
     /**
      * AccessToken 재발급 시 헤더에 실어서 보내는 메소드
@@ -96,17 +125,6 @@ public class JwtService {
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
         log.info("Access Token, Refresh Token 헤더 설정 완료");
-    }
-
-    /**
-     * 헤더에서 RefreshToken 추출
-     * 토큰 형식 : Bearer XXX에서 Bearer를 제외하고 순수 토큰만 가져오기 위해서
-     * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
-     */
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(refreshHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     /**
