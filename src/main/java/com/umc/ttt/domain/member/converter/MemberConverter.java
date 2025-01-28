@@ -1,5 +1,5 @@
 package com.umc.ttt.domain.member.converter;
-
+import com.umc.ttt.domain.member.dto.TokenResponseDTO;
 import com.umc.ttt.domain.member.dto.MemberResponseDTO;
 import com.umc.ttt.domain.member.entity.Member;
 
@@ -21,4 +21,11 @@ public class MemberConverter {
                 .profileUrl(member.getProfileUrl())
                 .build();
     }
+
+    public static TokenResponseDTO.UpdateResultDTO updateResultDTO(String token) {
+        return TokenResponseDTO.UpdateResultDTO.builder()
+                .accessToken(token)
+                .build();
+    }
+
 }

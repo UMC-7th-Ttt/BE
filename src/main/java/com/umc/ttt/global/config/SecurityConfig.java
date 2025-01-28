@@ -1,8 +1,10 @@
 package com.umc.ttt.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.umc.ttt.domain.member.entity.enums.Role;
 import com.umc.ttt.domain.member.repository.MemberRepository;
 import com.umc.ttt.global.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.umc.ttt.global.jwt.filter.JwtExceptionFilter;
 import com.umc.ttt.global.jwt.service.JwtService;
 import com.umc.ttt.global.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import com.umc.ttt.global.login.handler.LoginFailureHandler;
@@ -12,6 +14,7 @@ import com.umc.ttt.global.oauth2.handler.OAuth2LoginFailureHandler;
 import com.umc.ttt.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.umc.ttt.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,8 +45,8 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     private final String[] swaggerUrls = {"/swagger-ui/**", "/v3/**"};
-    private final String[] permittedUrls = {"/swagger-ui/**", "/**"}; // TODO 추후 수정
-//    private final String[] permittedUrls = {"/api/sign-up"}; // TODO 추후 수정
+//    private final String[] permittedUrls = {"/**"}; // TODO 인증 모두 해제
+    private final String[] permittedUrls = {"/api/sign-up","/api/login","/token/**"}; // TODO 추가필요
 
     private final String[] allowedUrls = Stream.concat(Arrays.stream(swaggerUrls), Arrays.stream(permittedUrls))
             .toArray(String[]::new);
@@ -88,10 +91,10 @@ public class SecurityConfig {
                 // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
 // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
 // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
-                // 커스텀 필터 설정
+//                // 커스텀 필터 설정
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
-                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtExceptionFilter(), JwtAuthenticationProcessingFilter.class);// 경우의 수 중 이 버전 통과
         return http.build();
     }
 
@@ -152,5 +155,11 @@ public class SecurityConfig {
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
         return jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public JwtExceptionFilter jwtExceptionFilter() {
+        JwtExceptionFilter jwtExceptionFilter = new JwtExceptionFilter();
+        return jwtExceptionFilter;
     }
 }
