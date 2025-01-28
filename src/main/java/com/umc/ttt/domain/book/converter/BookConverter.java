@@ -4,7 +4,6 @@ import com.umc.ttt.domain.book.dto.BookFetchDTO;
 import com.umc.ttt.domain.book.dto.BookResponseDTO;
 import com.umc.ttt.domain.book.entity.Book;
 import com.umc.ttt.domain.book.entity.BookCategory;
-import com.umc.ttt.domain.member.entity.Member;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class BookConverter {
                 .build();
     }
 
-    public static BookResponseDTO.GetBookDetailResultDTO toGetBookDetailResultDTO(Book book, Member member, boolean isScraped) {
+    public static BookResponseDTO.GetBookDetailResultDTO toGetBookDetailResultDTO(Book book, boolean isScraped) {
         return BookResponseDTO.GetBookDetailResultDTO.builder()
                 .id(book.getId())
                 .cover(book.getCover())
