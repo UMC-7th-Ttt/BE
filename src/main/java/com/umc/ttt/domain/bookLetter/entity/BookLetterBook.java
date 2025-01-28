@@ -1,6 +1,7 @@
 package com.umc.ttt.domain.bookLetter.entity;
 
 import com.umc.ttt.domain.book.entity.Book;
+import com.umc.ttt.domain.bookClub.entity.BookClub;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,4 +30,7 @@ public class BookLetterBook extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="book_id", nullable = false)
     private Book book;
+
+    @OneToOne(mappedBy = "bookLetterBook", cascade = CascadeType.PERSIST, orphanRemoval = false)
+    private BookClub bookClub;
 }

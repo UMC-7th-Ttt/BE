@@ -1,6 +1,8 @@
 package com.umc.ttt.domain.bookClub.entity;
 
+import com.umc.ttt.domain.bookClub.dto.BookClubRequestDTO;
 import com.umc.ttt.domain.bookLetter.entity.BookLetter;
+import com.umc.ttt.domain.bookLetter.entity.BookLetterBook;
 import com.umc.ttt.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +30,21 @@ public class BookClub extends BaseEntity {
     @Column(nullable = false)
     private String comment; // 한줄 추천 멘트
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_letter_id")
-    private BookLetter bookLetter;
+    @Column(nullable = false)
+    private Integer recruitNumber; // 최대 모집 인원
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="book_letter_book_id", nullable = true)
+    private BookLetterBook bookLetterBook;
+
+    public void setBookClub(BookClubRequestDTO.AddUpdateDTO request){
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.comment = request.getComment();
+        this.recruitNumber = request.getRecruitNumber();
+    }
+
+    public void setBookLetterBook(BookLetterBook bookLetterBook){
+        this.bookLetterBook = bookLetterBook;
+    }
 }

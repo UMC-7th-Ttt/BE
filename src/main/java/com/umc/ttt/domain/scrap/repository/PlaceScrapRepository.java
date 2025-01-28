@@ -27,4 +27,6 @@ public interface PlaceScrapRepository extends JpaRepository<PlaceScrap, Long> {
     List<Long> findScrapedPlaceIdsByMemberAndPlaces(@Param("member") Member member, @Param("places") List<Place> places);
 
     boolean existsByScrapFolderMemberAndPlace(Member member, Place place);
+
+    List<PlaceScrap> findAllByIdInAndScrapFolder(List<Long> list, ScrapFolder destinationFolder);
 }

@@ -22,7 +22,7 @@ public class BookConverter {
                 .bestRank(item.getBestRank())
                 .link(item.getLink())
                 .itemPage(item.getItemPage())
-                .hasEbook(item.isHasEbook())
+                .hasEbook(item.getHasEbook())
                 .bookCategory(bookCategory)
                 .build();
     }
@@ -50,7 +50,7 @@ public class BookConverter {
                 .build();
     }
 
-    private static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book, boolean isScraped) {
+    public static BookResponseDTO.BookInfoDTO toBookInfoDTO(Book book, boolean isScraped) {
         return BookResponseDTO.BookInfoDTO.builder()
                 .id(book.getId())
                 .cover(book.getCover())
@@ -72,7 +72,7 @@ public class BookConverter {
                 .publisher(book.getPublisher())
                 .itemPage(book.getItemPage())
                 .description(book.getDescription())
-                .hasEbook(book.isHasEbook())
+                .hasEbook(book.getHasEbook())
                 .isScraped(isScraped)
                 .build();
     }
