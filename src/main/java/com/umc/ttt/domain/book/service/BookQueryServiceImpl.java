@@ -115,6 +115,6 @@ public class BookQueryServiceImpl implements BookQueryService {
 
         boolean isScraped = bookScrapRepository.existsByScrapFolderMemberAndBook(member, book);
 
-        return BookConverter.toGetBookDetailResultDTO(book, member, isScraped);
+        return BookConverter.toGetBookDetailResultDTO(book, isScraped);
     }
 }
